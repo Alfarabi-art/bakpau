@@ -95,26 +95,26 @@ h1,h2,h3,h4,h5,h6,p,label{
 produk_data = {
 
     "Bakpau Coklat": {
-        "harga":5000,
-        "stok":100,
+        "modal":3000,
+        "jual":5000,
         "gambar":"https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1200"
     },
 
     "Bakpau Ayam": {
-        "harga":7000,
-        "stok":80,
+        "modal":4000,
+        "jual":7000,
         "gambar":"https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=1200"
     },
 
     "Bakpau Kacang Hijau": {
-        "harga":6000,
-        "stok":70,
+        "modal":3500,
+        "jual":6000,
         "gambar":"https://images.unsplash.com/photo-1526318896980-cf78c088247c?q=80&w=1200"
     },
 
     "Bakpau Keju": {
-        "harga":8000,
-        "stok":50,
+        "modal":5000,
+        "jual":8000,
         "gambar":"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=1200"
     }
 
@@ -127,15 +127,6 @@ produk_data = {
 if "riwayat" not in st.session_state:
     st.session_state.riwayat = []
 
-if "stok_produk" not in st.session_state:
-
-    st.session_state.stok_produk = {
-
-        nama: data["stok"]
-        for nama, data in produk_data.items()
-
-    }
-
 # =====================================================
 # HEADER
 # =====================================================
@@ -146,7 +137,7 @@ st.subheader("Sistem Distribusi & Pendapatan UMKM")
 st.write("")
 
 # =====================================================
-# DASHBOARD TOTAL
+# TOTAL DASHBOARD
 # =====================================================
 
 total_omzet = sum(
@@ -154,13 +145,14 @@ total_omzet = sum(
     for x in st.session_state.riwayat
 )
 
-total_produk = sum(
-    x["Total Qty"]
+total_profit = sum(
+    x["Keuntungan"]
     for x in st.session_state.riwayat
 )
 
-total_transaksi = len(
-    st.session_state.riwayat
+total_produk = sum(
+    x["Total Qty"]
+    for x in st.session_state.riwayat
 )
 
 # =====================================================
@@ -191,11 +183,11 @@ with col2:
     <div class="metric-box">
 
         <div class="metric-title">
-            📦 Produk Keluar
+            📈 Total Keuntungan
         </div>
 
         <div class="metric-value">
-            {total_produk} pcs
+            Rp {total_profit:,}
         </div>
 
     </div>
@@ -207,73 +199,15 @@ with col3:
     <div class="metric-box">
 
         <div class="metric-title">
-            🧾 Total Transaksi
+            📦 Produk Keluar
         </div>
 
         <div class="metric-value">
-            {total_transaksi}
+            {total_produk} pcs
         </div>
 
     </div>
     """, unsafe_allow_html=True)
-
-# =====================================================
-# STOK PRODUK
-# =====================================================
-
-st.write("")
-st.markdown("## 📦 Stok Produk")
-
-stok_df = pd.DataFrame({
-
-    "Produk":
-    list(st.session_state.stok_produk.keys()),
-
-    "Sisa Stok":
-    list(st.session_state.stok_produk.values())
-
-})
-
-st.dataframe(
-    stok_df,
-    use_container_width=True
-)
-
-# =====================================================
-# TAMBAH STOK
-# =====================================================
-
-st.write("")
-st.markdown("## ➕ Tambah Stok")
-
-col1, col2 = st.columns(2)
-
-with col1:
-
-    pilih_produk = st.selectbox(
-        "Pilih Produk",
-        list(produk_data.keys())
-    )
-
-with col2:
-
-    tambah_stok = st.number_input(
-        "Jumlah Tambah Stok",
-        min_value=1,
-        step=1
-    )
-
-if st.button("➕ Tambah Stok Sekarang"):
-
-    st.session_state.stok_produk[
-        pilih_produk
-    ] += tambah_stok
-
-    st.success(
-        f"Stok {pilih_produk} berhasil ditambah {tambah_stok}"
-    )
-
-    st.rerun()
 
 # =====================================================
 # FORM INPUT
@@ -302,10 +236,6 @@ produk_terpilih = []
 
 for nama_produk, data in produk_data.items():
 
-    stok_sekarang = st.session_state.stok_produk[
-        nama_produk
-    ]
-
     st.markdown("""
     <div class="product-box">
     """, unsafe_allow_html=True)
@@ -328,20 +258,8 @@ for nama_produk, data in produk_data.items():
         )
 
         st.markdown(
-            f"## Rp {data['harga']:,}"
+            f"## Rp {data['jual']:,}"
         )
-
-        if stok_sekarang <= 10:
-
-            st.error(
-                f"⚠️ Stok tersisa {stok_sekarang}"
-            )
-
-        else:
-
-            st.success(
-                f"✅ Stok tersedia {stok_sekarang}"
-            )
 
     # =================================================
     # INPUT QTY
@@ -356,7 +274,6 @@ for nama_produk, data in produk_data.items():
         qty = st.number_input(
             f"Qty {nama_produk}",
             min_value=0,
-            max_value=stok_sekarang,
             step=1,
             key=nama_produk
         )
@@ -371,18 +288,22 @@ for nama_produk, data in produk_data.items():
 
     if qty > 0:
 
-        total_jual = qty * data["harga"]
+        total_modal = qty * data["modal"]
+        total_jual = qty * data["jual"]
+        keuntungan = total_jual - total_modal
 
         produk_terpilih.append({
 
             "Produk": nama_produk,
             "Qty": qty,
-            "Total Jual": total_jual
+            "Total Modal": total_modal,
+            "Total Jual": total_jual,
+            "Keuntungan": keuntungan
 
         })
 
 # =====================================================
-# TOTAL
+# TOTAL TRANSAKSI
 # =====================================================
 
 grand_qty = sum(
@@ -390,8 +311,18 @@ grand_qty = sum(
     for x in produk_terpilih
 )
 
+grand_modal = sum(
+    x["Total Modal"]
+    for x in produk_terpilih
+)
+
 grand_jual = sum(
     x["Total Jual"]
+    for x in produk_terpilih
+)
+
+grand_profit = sum(
+    x["Keuntungan"]
     for x in produk_terpilih
 )
 
@@ -402,7 +333,7 @@ grand_jual = sum(
 st.write("")
 st.markdown("## 🧾 Ringkasan")
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 with col1:
 
@@ -415,9 +346,17 @@ with col1:
 with col2:
 
     st.info(f"""
-    Total Omzet
+    Omzet
 
     Rp {grand_jual:,}
+    """)
+
+with col3:
+
+    st.warning(f"""
+    Keuntungan
+
+    Rp {grand_profit:,}
     """)
 
 # =====================================================
@@ -429,28 +368,12 @@ st.write("")
 if st.button("💾 Simpan Distribusi"):
 
     if nama == "":
-
         st.warning("Masukkan nama reseller")
 
     elif len(produk_terpilih) == 0:
-
         st.warning("Pilih minimal 1 produk")
 
     else:
-
-        # =================================================
-        # KURANGI STOK
-        # =================================================
-
-        for item in produk_terpilih:
-
-            st.session_state.stok_produk[
-                item["Produk"]
-            ] -= item["Qty"]
-
-        # =================================================
-        # GABUNG PRODUK
-        # =================================================
 
         daftar_produk = []
 
@@ -463,10 +386,6 @@ if st.button("💾 Simpan Distribusi"):
         gabungan_produk = ", ".join(
             daftar_produk
         )
-
-        # =================================================
-        # SIMPAN RIWAYAT
-        # =================================================
 
         st.session_state.riwayat.append({
 
@@ -484,8 +403,14 @@ if st.button("💾 Simpan Distribusi"):
             "Total Qty":
             grand_qty,
 
+            "Total Modal":
+            grand_modal,
+
             "Total Omzet":
             grand_jual,
+
+            "Keuntungan":
+            grand_profit,
 
             "Status":
             status
@@ -495,8 +420,6 @@ if st.button("💾 Simpan Distribusi"):
         st.success(
             "Distribusi berhasil disimpan"
         )
-
-        st.rerun()
 
 # =====================================================
 # RIWAYAT
