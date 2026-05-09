@@ -42,15 +42,6 @@ h1,h2,h3,h4,h5,h6,p,label{
     color:white !important;
 }
 
-.metric-box{
-    background:rgba(255,255,255,0.08);
-    padding:18px;
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,0.08);
-    text-align:center;
-    backdrop-filter:blur(10px);
-}
-
 .product-box{
     background:rgba(255,255,255,0.08);
     padding:15px;
@@ -94,25 +85,21 @@ produk_data = {
 
     "Bakpau Coklat": {
         "harga":5000,
-        "stok":100,
         "gambar":"https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1200"
     },
 
     "Bakpau Ayam": {
         "harga":7000,
-        "stok":80,
         "gambar":"https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=1200"
     },
 
     "Bakpau Kacang Hijau": {
         "harga":6000,
-        "stok":70,
         "gambar":"https://images.unsplash.com/photo-1526318896980-cf78c088247c?q=80&w=1200"
     },
 
     "Bakpau Keju": {
         "harga":8000,
-        "stok":50,
         "gambar":"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=1200"
     }
 
@@ -127,15 +114,6 @@ if "riwayat" not in st.session_state:
 
 if "invoice_terakhir" not in st.session_state:
     st.session_state.invoice_terakhir = None
-
-if "stok_produk" not in st.session_state:
-
-    st.session_state.stok_produk = {
-
-        nama: data["stok"]
-        for nama, data in produk_data.items()
-
-    }
 
 # =====================================================
 # HEADER
@@ -183,28 +161,6 @@ with col3:
     )
 
 # =====================================================
-# STOK PRODUK
-# =====================================================
-
-st.write("")
-st.markdown("## 📦 Stok Produk")
-
-stok_df = pd.DataFrame({
-
-    "Produk":
-    list(st.session_state.stok_produk.keys()),
-
-    "Sisa Stok":
-    list(st.session_state.stok_produk.values())
-
-})
-
-st.dataframe(
-    stok_df,
-    use_container_width=True
-)
-
-# =====================================================
 # FORM INPUT
 # =====================================================
 
@@ -231,10 +187,6 @@ produk_terpilih = []
 
 for nama_produk, data in produk_data.items():
 
-    stok_sekarang = st.session_state.stok_produk[
-        nama_produk
-    ]
-
     st.markdown(
         '<div class="product-box">',
         unsafe_allow_html=True
@@ -257,16 +209,11 @@ for nama_produk, data in produk_data.items():
             f"## Rp {data['harga']:,}"
         )
 
-        st.info(
-            f"Stok tersedia {stok_sekarang}"
-        )
-
     with col2:
 
         qty = st.number_input(
             f"Qty {nama_produk}",
             min_value=0,
-            max_value=stok_sekarang,
             step=1,
             key=nama_produk
         )
@@ -334,12 +281,6 @@ if st.button("💾 Simpan Distribusi"):
         st.warning("Pilih minimal 1 produk")
 
     else:
-
-        for item in produk_terpilih:
-
-            st.session_state.stok_produk[
-                item["Produk"]
-            ] -= item["Qty"]
 
         daftar_produk = []
 
