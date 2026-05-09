@@ -36,7 +36,7 @@ h1,h2,h3,h4,h5,h6,p,label{
     color:white !important;
 }
 
-.menu-card{
+.menu-box{
     background:rgba(255,255,255,0.08);
     padding:20px;
     border-radius:20px;
@@ -44,14 +44,14 @@ h1,h2,h3,h4,h5,h6,p,label{
     backdrop-filter:blur(10px);
 }
 
-.cart-card{
+.cart-box{
     background:rgba(255,255,255,0.10);
     padding:18px;
     border-radius:18px;
     margin-bottom:15px;
 }
 
-.receipt-box{
+.receipt{
     background:white;
     color:black;
     padding:25px;
@@ -80,47 +80,17 @@ h1,h2,h3,h4,h5,h6,p,label{
 # HEADER
 # =====================================================
 
-header_html = """
-<div style="
-display:flex;
-align-items:center;
-gap:20px;
-margin-bottom:30px;
-">
-
-    <div style="font-size:70px;">
-        🥟
-    </div>
-
-    <div>
-
-        <div style="
-            color:white;
-            font-size:55px;
-            font-weight:bold;
-        ">
-            Kasir Bakpau
-        </div>
-
-        <div style="
-            color:#dddddd;
-            font-size:18px;
-        ">
-            Fresh & Warm Everyday
-        </div>
-
-    </div>
-
-</div>
-"""
-
-st.markdown(header_html, unsafe_allow_html=True)
+st.markdown("""
+# 🥟 Kasir Bakpau
+### Fresh & Warm Everyday
+""")
 
 # =====================================================
-# MENU DATA
+# DATA MENU
 # =====================================================
 
 menu = [
+
     {
         "nama":"Bakpau Coklat",
         "harga":5000,
@@ -144,6 +114,7 @@ menu = [
         "harga":8000,
         "gambar":"https://images.unsplash.com/photo-1526318896980-cf78c088247c?q=80&w=1200&auto=format&fit=crop"
     }
+
 ]
 
 # =====================================================
@@ -165,57 +136,46 @@ col1, col2 = st.columns([1.2,1])
 
 with col1:
 
-    st.markdown("## 🍽️ Menu Bakpau")
+    st.markdown("## 🍽️ Menu")
 
     for i, item in enumerate(menu):
 
-        st.markdown(f"""
-        <div class="menu-card">
+        with st.container():
 
-            <img src="{item['gambar']}"
-            style="
-            width:100%;
-            border-radius:20px;
-            ">
+            st.markdown('<div class="menu-box">', unsafe_allow_html=True)
 
-            <div style="
-            margin-top:20px;
-            color:white;
-            font-size:32px;
-            font-weight:bold;
-            ">
-                {item['nama']}
-            </div>
+            st.image(item["gambar"], use_container_width=True)
 
-            <div style="
-            color:#ffd166;
-            font-size:24px;
-            font-weight:bold;
-            margin-top:10px;
-            ">
-                Rp {item['harga']:,}
-            </div>
+            st.markdown(
+                f"### {item['nama']}"
+            )
 
-        </div>
-        """, unsafe_allow_html=True)
+            st.markdown(
+                f"## Rp {item['harga']:,}"
+            )
 
-        qty = st.number_input(
-            f"Qty {item['nama']}",
-            min_value=1,
-            value=1,
-            key=f"qty_{i}"
-        )
+            qty = st.number_input(
+                f"Qty {item['nama']}",
+                min_value=1,
+                value=1,
+                key=f"qty_{i}"
+            )
 
-        if st.button(f"Tambah {item['nama']}", key=f"btn_{i}"):
+            if st.button(
+                f"Tambah {item['nama']}",
+                key=f"btn_{i}"
+            ):
 
-            st.session_state.cart.append({
-                "nama":item["nama"],
-                "harga":item["harga"],
-                "qty":qty,
-                "subtotal":item["harga"] * qty
-            })
+                st.session_state.cart.append({
+                    "nama":item["nama"],
+                    "harga":item["harga"],
+                    "qty":qty,
+                    "subtotal":item["harga"] * qty
+                })
 
-            st.success(f"{item['nama']} ditambahkan")
+                st.success("Berhasil ditambahkan")
+
+            st.markdown('</div>', unsafe_allow_html=True)
 
 # =====================================================
 # KERANJANG
@@ -229,7 +189,7 @@ with col2:
 
     if len(st.session_state.cart) == 0:
 
-        st.info("Belum ada pesanan")
+        st.info("Keranjang kosong")
 
     else:
 
@@ -237,51 +197,30 @@ with col2:
 
             total += item["subtotal"]
 
-            st.markdown(f"""
-            <div class="cart-card">
+            st.markdown('<div class="cart-box">', unsafe_allow_html=True)
 
-                <div style="
-                display:flex;
-                justify-content:space-between;
-                ">
+            c1, c2 = st.columns([3,1])
 
-                    <div>
+            with c1:
 
-                        <div style="
-                        color:white;
-                        font-size:24px;
-                        font-weight:bold;
-                        ">
-                            {item['nama']}
-                        </div>
+                st.markdown(f"""
+                ### {item['nama']}
+                {item['qty']} x Rp {item['harga']:,}
+                """)
 
-                        <div style="
-                        color:#dddddd;
-                        margin-top:5px;
-                        ">
-                            {item['qty']} x Rp {item['harga']:,}
-                        </div>
+            with c2:
 
-                    </div>
+                st.markdown(
+                    f"### Rp {item['subtotal']:,}"
+                )
 
-                    <div style="
-                    color:#ffd166;
-                    font-size:22px;
-                    font-weight:bold;
-                    ">
-                        Rp {item['subtotal']:,}
-                    </div>
-
-                </div>
-
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown(f"# Total : Rp {total:,}")
 
     payment = st.selectbox(
         "Metode Pembayaran",
-        ["Cash","QRIS","Transfer"]
+        ["Cash", "QRIS", "Transfer"]
     )
 
     bayar = st.number_input(
@@ -298,68 +237,40 @@ with col2:
 
     if st.button("🧾 Cetak Struk"):
 
-        now = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
-
-        st.markdown('<div class="receipt-box">', unsafe_allow_html=True)
+        st.markdown('<div class="receipt">', unsafe_allow_html=True)
 
         st.markdown("""
-        <div style="text-align:center;">
+        # 🥟 TOKO BAKPAU
+        Fresh & Warm Everyday
+        """)
 
-            <div style="font-size:60px;">
-                🥟
-            </div>
+        st.divider()
 
-            <div style="
-            font-size:32px;
-            font-weight:bold;
-            color:#d62828;
-            ">
-                TOKO BAKPAU
-            </div>
-
-            <div style="
-            color:gray;
-            margin-top:5px;
-            ">
-                Fresh & Warm Everyday
-            </div>
-
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("---")
+        now = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 
         st.write("Tanggal :", now)
 
-        st.markdown("---")
+        st.divider()
 
         for item in st.session_state.cart:
 
             c1, c2 = st.columns([3,1])
 
             with c1:
-                st.write(f"**{item['nama']}**")
+                st.write(item["nama"])
                 st.write(f"{item['qty']} x Rp {item['harga']:,}")
 
             with c2:
                 st.write(f"Rp {item['subtotal']:,}")
 
-        st.markdown("---")
+        st.divider()
 
-        st.write(f"### TOTAL : Rp {total:,}")
-        st.write(f"PEMBAYARAN : {payment}")
-        st.write(f"TUNAI : Rp {bayar:,}")
-        st.write(f"### KEMBALIAN : Rp {kembali:,}")
+        st.markdown(f"## TOTAL : Rp {total:,}")
 
-        st.markdown("""
-        <div style="
-        text-align:center;
-        margin-top:30px;
-        color:#666;
-        ">
-            Terima Kasih 🙏<br>
-            Selamat menikmati bakpau 🥟
-        </div>
-        """, unsafe_allow_html=True)
+        st.write("Pembayaran :", payment)
+        st.write(f"Tunai : Rp {bayar:,}")
+        st.write(f"Kembalian : Rp {kembali:,}")
 
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.success("Terima Kasih 🙏")
+
+        st.markdown('</div>', unsafe_allow_html=True)
