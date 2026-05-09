@@ -62,14 +62,6 @@ h1,h2,h3,h4,h5,h6,p,label{
     background:#c1121f;
 }
 
-.card{
-    background:rgba(255,255,255,0.10);
-    padding:25px;
-    border-radius:20px;
-    backdrop-filter: blur(10px);
-    border:1px solid rgba(255,255,255,0.1);
-}
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -161,90 +153,27 @@ for item in st.session_state.data_distributor:
     total_produk += item["Qty"]
 
 # ======================================================
-# DASHBOARD
+# DASHBOARD FIX
 # ======================================================
 
-c1, c2, c3 = st.columns(3)
+col1, col2, col3 = st.columns(3)
 
-with c1:
-
-    st.markdown(
-        f"""
-        <div class="card">
-
-            <div style="
-            color:#dddddd;
-            font-size:20px;
-            margin-bottom:15px;
-            ">
-                Total Omzet
-            </div>
-
-            <div style="
-            color:white;
-            font-size:42px;
-            font-weight:bold;
-            ">
-                Rp {total_omzet:,}
-            </div>
-
-        </div>
-        """,
-        unsafe_allow_html=True
+with col1:
+    st.metric(
+        label="💰 Total Omzet",
+        value=f"Rp {total_omzet:,}"
     )
 
-with c2:
-
-    st.markdown(
-        f"""
-        <div class="card">
-
-            <div style="
-            color:#dddddd;
-            font-size:20px;
-            margin-bottom:15px;
-            ">
-                Total Keuntungan
-            </div>
-
-            <div style="
-            color:#00ff99;
-            font-size:42px;
-            font-weight:bold;
-            ">
-                Rp {total_keuntungan:,}
-            </div>
-
-        </div>
-        """,
-        unsafe_allow_html=True
+with col2:
+    st.metric(
+        label="📈 Total Keuntungan",
+        value=f"Rp {total_keuntungan:,}"
     )
 
-with c3:
-
-    st.markdown(
-        f"""
-        <div class="card">
-
-            <div style="
-            color:#dddddd;
-            font-size:20px;
-            margin-bottom:15px;
-            ">
-                Total Produk Keluar
-            </div>
-
-            <div style="
-            color:#ffd166;
-            font-size:42px;
-            font-weight:bold;
-            ">
-                {total_produk} pcs
-            </div>
-
-        </div>
-        """,
-        unsafe_allow_html=True
+with col3:
+    st.metric(
+        label="📦 Total Produk Keluar",
+        value=f"{total_produk} pcs"
     )
 
 # ======================================================
@@ -255,18 +184,12 @@ st.write("")
 st.write("")
 
 # ======================================================
-# FORM
+# FORM INPUT
 # ======================================================
 
 st.markdown("""
-<div class="card">
-""", unsafe_allow_html=True)
-
-st.markdown("""
-<h1>
-📦 Input Pengambilan Produk
-</h1>
-""", unsafe_allow_html=True)
+# 📦 Input Pengambilan Produk
+""")
 
 nama = st.text_input(
     "Nama Pengambil / Reseller"
@@ -296,11 +219,7 @@ grand_qty = 0
 
 for i in range(jumlah_produk):
 
-    st.markdown(f"""
-    <h3 style="color:white;">
-    Produk {i+1}
-    </h3>
-    """, unsafe_allow_html=True)
+    st.markdown(f"### Produk {i+1}")
 
     col1, col2 = st.columns(2)
 
@@ -348,37 +267,16 @@ for i in range(jumlah_produk):
 # RINGKASAN
 # ======================================================
 
-st.markdown(f"""
-<div style="
-background:rgba(255,255,255,0.08);
-padding:20px;
-border-radius:15px;
-margin-top:25px;
-">
+st.markdown("---")
 
-<h2 style="color:white;">
-💰 Ringkasan
-</h2>
+st.success(f"💰 Total Omzet : Rp {grand_total_jual:,}")
 
-<h1 style="color:#00ff99;">
-Omzet : Rp {grand_total_jual:,}
-</h1>
+st.info(f"📈 Total Keuntungan : Rp {grand_keuntungan:,}")
 
-<h1 style="color:#ffd166;">
-Keuntungan : Rp {grand_keuntungan:,}
-</h1>
-
-<h1 style="color:white;">
-Total Produk : {grand_qty} pcs
-</h1>
-
-</div>
-""", unsafe_allow_html=True)
-
-st.write("")
+st.warning(f"📦 Total Produk : {grand_qty} pcs")
 
 # ======================================================
-# BUTTON
+# BUTTON SIMPAN
 # ======================================================
 
 if st.button("💾 Simpan Distribusi"):
@@ -420,8 +318,6 @@ if st.button("💾 Simpan Distribusi"):
 
         st.success("Data berhasil disimpan")
 
-st.markdown("</div>", unsafe_allow_html=True)
-
 # ======================================================
 # SPACING
 # ======================================================
@@ -433,15 +329,7 @@ st.write("")
 # RIWAYAT
 # ======================================================
 
-st.markdown("""
-<div class="card">
-""", unsafe_allow_html=True)
-
-st.markdown("""
-<h1>
-📋 Riwayat Distribusi
-</h1>
-""", unsafe_allow_html=True)
+st.markdown("# 📋 Riwayat Distribusi")
 
 if len(st.session_state.data_distributor) == 0:
 
@@ -466,5 +354,3 @@ else:
         "laporan_distributor.csv",
         "text/csv"
     )
-
-st.markdown("</div>", unsafe_allow_html=True)
