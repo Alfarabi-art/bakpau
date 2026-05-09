@@ -2,9 +2,9 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-# =====================================================
-# PAGE CONFIG
-# =====================================================
+# ======================================================
+# CONFIG
+# ======================================================
 
 st.set_page_config(
     page_title="Distributor Bakpau",
@@ -12,9 +12,9 @@ st.set_page_config(
     layout="wide"
 )
 
-# =====================================================
-# CSS FIX TOTAL
-# =====================================================
+# ======================================================
+# CSS
+# ======================================================
 
 st.markdown("""
 <style>
@@ -63,31 +63,19 @@ h1,h2,h3,h4,h5,h6,p,label{
     border: 1px solid rgba(255,255,255,0.1);
 }
 
-.metric-title{
-    color: #dddddd;
-    font-size: 20px;
-    margin-bottom: 10px;
-}
-
-.metric-value{
-    color: white;
-    font-size: 38px;
-    font-weight: bold;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
-# =====================================================
+# ======================================================
 # SESSION STATE
-# =====================================================
+# ======================================================
 
 if "data_distributor" not in st.session_state:
     st.session_state.data_distributor = []
 
-# =====================================================
+# ======================================================
 # DATA PRODUK
-# =====================================================
+# ======================================================
 
 produk_data = {
 
@@ -113,9 +101,9 @@ produk_data = {
 
 }
 
-# =====================================================
+# ======================================================
 # HEADER
-# =====================================================
+# ======================================================
 
 st.markdown("""
 <div style="
@@ -151,9 +139,9 @@ Sistem Distribusi & Pendapatan UMKM
 </div>
 """, unsafe_allow_html=True)
 
-# =====================================================
+# ======================================================
 # HITUNG TOTAL
-# =====================================================
+# ======================================================
 
 total_omzet = 0
 total_keuntungan = 0
@@ -165,9 +153,9 @@ for item in st.session_state.data_distributor:
     total_keuntungan += item["Keuntungan"]
     total_produk += item["Qty"]
 
-# =====================================================
+# ======================================================
 # DASHBOARD
-# =====================================================
+# ======================================================
 
 c1, c2, c3 = st.columns(3)
 
@@ -176,12 +164,20 @@ with c1:
     st.markdown(f"""
     <div class="card">
 
-        <div class="metric-title">
-        Total Omzet
+        <div style="
+        color:#dddddd;
+        font-size:20px;
+        margin-bottom:10px;
+        ">
+            Total Omzet
         </div>
 
-        <div class="metric-value">
-        Rp {total_omzet:,}
+        <div style="
+        color:white;
+        font-size:40px;
+        font-weight:bold;
+        ">
+            Rp {total_omzet:,}
         </div>
 
     </div>
@@ -192,12 +188,20 @@ with c2:
     st.markdown(f"""
     <div class="card">
 
-        <div class="metric-title">
-        Total Keuntungan
+        <div style="
+        color:#dddddd;
+        font-size:20px;
+        margin-bottom:10px;
+        ">
+            Total Keuntungan
         </div>
 
-        <div class="metric-value" style="color:#00ff99;">
-        Rp {total_keuntungan:,}
+        <div style="
+        color:#00ff99;
+        font-size:40px;
+        font-weight:bold;
+        ">
+            Rp {total_keuntungan:,}
         </div>
 
     </div>
@@ -208,27 +212,35 @@ with c3:
     st.markdown(f"""
     <div class="card">
 
-        <div class="metric-title">
-        Total Produk Keluar
+        <div style="
+        color:#dddddd;
+        font-size:20px;
+        margin-bottom:10px;
+        ">
+            Total Produk Keluar
         </div>
 
-        <div class="metric-value" style="color:#ffd166;">
-        {total_produk} pcs
+        <div style="
+        color:#ffd166;
+        font-size:40px;
+        font-weight:bold;
+        ">
+            {total_produk} pcs
         </div>
 
     </div>
     """, unsafe_allow_html=True)
 
-# =====================================================
-# SPACER
-# =====================================================
+# ======================================================
+# SPACING
+# ======================================================
 
 st.write("")
 st.write("")
 
-# =====================================================
+# ======================================================
 # FORM INPUT
-# =====================================================
+# ======================================================
 
 st.markdown("""
 <div class="card">
@@ -262,9 +274,9 @@ grand_total_jual = 0
 grand_keuntungan = 0
 grand_qty = 0
 
-# =====================================================
-# INPUT MULTI PRODUK
-# =====================================================
+# ======================================================
+# MULTI PRODUK
+# ======================================================
 
 for i in range(jumlah_produk):
 
@@ -315,9 +327,9 @@ for i in range(jumlah_produk):
         "Keuntungan": keuntungan
     })
 
-# =====================================================
+# ======================================================
 # RINGKASAN
-# =====================================================
+# ======================================================
 
 st.markdown(f"""
 <div style="
@@ -346,11 +358,11 @@ Total Produk : {grand_qty} pcs
 </div>
 """, unsafe_allow_html=True)
 
-# =====================================================
-# BUTTON
-# =====================================================
-
 st.write("")
+
+# ======================================================
+# BUTTON SIMPAN
+# ======================================================
 
 if st.button("💾 Simpan Distribusi"):
 
@@ -392,16 +404,16 @@ if st.button("💾 Simpan Distribusi"):
 
 st.markdown("</div>", unsafe_allow_html=True)
 
-# =====================================================
-# SPACER
-# =====================================================
+# ======================================================
+# SPACING
+# ======================================================
 
 st.write("")
 st.write("")
 
-# =====================================================
+# ======================================================
 # TABEL DATA
-# =====================================================
+# ======================================================
 
 st.markdown("""
 <div class="card">
