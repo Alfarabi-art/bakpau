@@ -13,65 +13,89 @@ st.set_page_config(
 )
 
 # =====================================================
+# VIDEO BACKGROUND
+# =====================================================
+
+VIDEO_URL = "https://raw.githubusercontent.com/Alfarabi-art/eskepala/main/bg.mp4"
+
+# =====================================================
 # CSS
 # =====================================================
 
-st.markdown("""
+st.markdown(f"""
 <style>
 
-.stApp{
-    background:
-    linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)),
-    url("https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=1200");
+/* HILANGKAN HEADER */
+[data-testid="stHeader"] {{
+    background: transparent;
+}}
 
-    background-size:cover;
-    background-position:center;
-    background-attachment:fixed;
-}
+/* VIDEO BACKGROUND */
+#bg-video {{
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}}
 
-[data-testid="stHeader"]{
-    background:transparent;
-}
+/* OVERLAY */
+.video-overlay {{
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.65);
+    z-index:-1;
+}}
 
-.block-container{
+/* CONTAINER */
+.block-container {{
     padding-top:20px;
     padding-bottom:50px;
-}
+}}
 
-h1,h2,h3,h4,h5,h6{
+/* TEXT */
+h1,h2,h3,h4,h5,h6 {{
     color:white !important;
-}
+}}
 
-label,p{
+label,p {{
     color:white !important;
-}
+}}
 
-.product-box{
+/* PRODUCT CARD */
+.product-box {{
     background:rgba(255,255,255,0.08);
     padding:20px;
     border-radius:20px;
     margin-bottom:25px;
     border:1px solid rgba(255,255,255,0.1);
     backdrop-filter:blur(10px);
-}
+}}
 
-.invoice-box{
+/* INVOICE */
+.invoice-box {{
     background:white;
     color:black !important;
     padding:30px;
     border-radius:20px;
     margin-top:20px;
-}
+}}
 
 .invoice-box h1,
 .invoice-box h2,
 .invoice-box h3,
 .invoice-box h4,
-.invoice-box p{
+.invoice-box p {{
     color:black !important;
-}
+}}
 
-.stButton button{
+/* BUTTON */
+.stButton button {{
     width:100%;
     background:#ff4b4b;
     color:white;
@@ -80,13 +104,14 @@ label,p{
     padding:14px;
     font-size:17px;
     font-weight:bold;
-}
+}}
 
-.stButton button:hover{
+.stButton button:hover {{
     background:#ff2e2e;
-}
+}}
 
-[data-testid="stDownloadButton"] button{
+/* DOWNLOAD BUTTON */
+[data-testid="stDownloadButton"] button {{
     width:100%;
     background:#00c853 !important;
     color:white !important;
@@ -95,31 +120,39 @@ label,p{
     padding:14px !important;
     font-size:17px !important;
     font-weight:bold !important;
-}
+}}
 
-[data-testid="stDownloadButton"] button:hover{
+[data-testid="stDownloadButton"] button:hover {{
     background:#00b248 !important;
     color:white !important;
-}
+}}
 
-@media(max-width:768px){
+/* MOBILE */
+@media(max-width:768px) {{
 
-    .block-container{
+    .block-container {{
         padding-left:15px;
         padding-right:15px;
-    }
+    }}
 
-    h1{
+    h1 {{
         font-size:34px !important;
-    }
+    }}
 
-    h2{
+    h2 {{
         font-size:24px !important;
-    }
+    }}
 
-}
+}}
 
 </style>
+
+<video autoplay muted loop id="bg-video">
+    <source src="{VIDEO_URL}" type="video/mp4">
+</video>
+
+<div class="video-overlay"></div>
+
 """, unsafe_allow_html=True)
 
 # =====================================================
