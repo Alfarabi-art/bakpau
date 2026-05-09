@@ -8,6 +8,7 @@ from datetime import datetime
 
 st.set_page_config(
     page_title="Distributor Bakpau",
+    page_icon="🥟",
     layout="wide"
 )
 
@@ -19,66 +20,97 @@ st.markdown("""
 <style>
 
 .stApp{
-    background-image:url("https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1400");
+    background:
+    linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)),
+    url("https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=1200");
+
     background-size:cover;
     background-position:center;
     background-attachment:fixed;
 }
 
-.main-card{
-    background:rgba(0,0,0,0.55);
-    padding:30px;
-    border-radius:25px;
-    backdrop-filter:blur(10px);
-    margin-bottom:25px;
+[data-testid="stHeader"]{
+    background:transparent;
 }
 
-.metric-card{
-    background:rgba(255,255,255,0.08);
-    padding:25px;
-    border-radius:20px;
-    text-align:center;
-    border:1px solid rgba(255,255,255,0.15);
+.block-container{
+    padding-top:20px;
+    padding-bottom:50px;
 }
 
-.metric-title{
-    color:#dddddd;
-    font-size:18px;
-    margin-bottom:10px;
-}
-
-.metric-value{
-    color:white;
-    font-size:36px;
-    font-weight:bold;
-}
-
-.product-card{
-    background:rgba(255,255,255,0.08);
-    padding:20px;
-    border-radius:20px;
-    margin-bottom:20px;
-    border:1px solid rgba(255,255,255,0.12);
-}
-
-.invoice-box{
-    background:white;
-    color:black;
-    padding:30px;
-    border-radius:20px;
-}
-
-.small-text{
-    color:#cccccc;
-    font-size:14px;
-}
+/* TEXT */
 
 h1,h2,h3,h4,h5,h6{
     color:white !important;
 }
 
-label{
+label,p{
     color:white !important;
+}
+
+/* PRODUCT CARD */
+
+.product-box{
+    background:rgba(255,255,255,0.08);
+    padding:20px;
+    border-radius:20px;
+    margin-bottom:25px;
+    border:1px solid rgba(255,255,255,0.1);
+    backdrop-filter:blur(10px);
+}
+
+/* INVOICE */
+
+.invoice-box{
+    background:white;
+    color:black !important;
+    padding:30px;
+    border-radius:20px;
+    margin-top:20px;
+}
+
+.invoice-box h1,
+.invoice-box h2,
+.invoice-box h3,
+.invoice-box h4,
+.invoice-box p{
+    color:black !important;
+}
+
+/* BUTTON */
+
+.stButton button{
+    width:100%;
+    background:#ff4b4b;
+    color:white;
+    border:none;
+    border-radius:15px;
+    padding:14px;
+    font-size:17px;
+    font-weight:bold;
+}
+
+.stButton button:hover{
+    background:#ff2e2e;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .block-container{
+        padding-left:15px;
+        padding-right:15px;
+    }
+
+    h1{
+        font-size:34px !important;
+    }
+
+    h2{
+        font-size:24px !important;
+    }
+
 }
 
 </style>
@@ -89,22 +121,27 @@ label{
 # =====================================================
 
 produk_data = {
+
     "Bakpau Coklat": {
         "harga": 5000,
-        "gambar": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000"
+        "gambar": "https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1200"
     },
+
     "Bakpau Ayam": {
         "harga": 7000,
-        "gambar": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000"
+        "gambar": "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=1200"
     },
+
     "Bakpau Kacang Hijau": {
         "harga": 6000,
-        "gambar": "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?q=80&w=1000"
+        "gambar": "https://images.unsplash.com/photo-1526318896980-cf78c088247c?q=80&w=1200"
     },
+
     "Bakpau Keju": {
         "harga": 8000,
-        "gambar": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=1000"
+        "gambar": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=1200"
     }
+
 }
 
 # =====================================================
@@ -121,100 +158,95 @@ if "invoice_terakhir" not in st.session_state:
 # HEADER
 # =====================================================
 
-st.markdown("""
-<div class="main-card">
-
-<h1 style="font-size:65px;">
-🥟 Distributor Bakpau
-</h1>
-
-<p style="font-size:28px;color:#dddddd;">
-Sistem Distribusi & Pendapatan UMKM
-</p>
-
-</div>
-""", unsafe_allow_html=True)
+st.title("🥟 Distributor Bakpau")
+st.subheader("Sistem Distribusi & Pendapatan UMKM")
 
 # =====================================================
-# METRIC
+# DASHBOARD
 # =====================================================
 
-df = pd.DataFrame(st.session_state.riwayat)
+total_omzet = sum(
+    x["Total Omzet"]
+    for x in st.session_state.riwayat
+)
 
-if len(df) > 0:
-    total_omzet = df["Total"].sum()
-    total_produk = df["Qty"].sum()
-else:
-    total_omzet = 0
-    total_produk = 0
+total_produk = sum(
+    x["Total Qty"]
+    for x in st.session_state.riwayat
+)
 
-col1, col2 = st.columns(2)
+total_transaksi = len(
+    st.session_state.riwayat
+)
+
+col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.markdown(f"""
-    <div class="metric-card">
-        <div class="metric-title">
-            Total Omzet
-        </div>
-
-        <div class="metric-value">
-            Rp {total_omzet:,}
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    st.metric(
+        "💰 Total Omzet",
+        f"Rp {total_omzet:,}"
+    )
 
 with col2:
-    st.markdown(f"""
-    <div class="metric-card">
-        <div class="metric-title">
-            Total Produk Keluar
-        </div>
+    st.metric(
+        "📦 Produk Keluar",
+        f"{total_produk} pcs"
+    )
 
-        <div class="metric-value">
-            {total_produk} pcs
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-st.write("")
+with col3:
+    st.metric(
+        "🧾 Total Transaksi",
+        total_transaksi
+    )
 
 # =====================================================
 # FORM INPUT
 # =====================================================
 
-st.markdown("""
-<div class="main-card">
-<h2>🛒 Input Pengambilan Produk</h2>
-</div>
-""", unsafe_allow_html=True)
+st.write("")
+st.markdown("## 📋 Input Distribusi")
 
-nama = st.text_input("Nama Pengambil / Reseller")
+nama = st.text_input(
+    "Nama Reseller"
+)
 
 status = st.selectbox(
     "Status Pembayaran",
-    ["Belum Bayar", "Lunas"]
+    ["Belum Bayar", "Sudah Bayar"]
 )
 
+# =====================================================
+# PRODUK
+# =====================================================
+
 st.write("")
+st.markdown("## 🛒 Pilih Produk")
 
-selected_items = []
+produk_terpilih = []
 
-for nama_produk, detail in produk_data.items():
+for nama_produk, data in produk_data.items():
 
-    col1, col2 = st.columns([1.5, 1])
+    st.markdown(
+        '<div class="product-box">',
+        unsafe_allow_html=True
+    )
+
+    col1, col2 = st.columns([2,1])
 
     with col1:
-        st.image(detail["gambar"], use_container_width=True)
+
+        st.image(
+            data["gambar"],
+            use_container_width=True
+        )
 
     with col2:
 
         st.markdown(f"""
-        <div class="product-card">
-            <h3>{nama_produk}</h3>
-            <h2 style="color:#ffcc66;">
-                Rp {detail['harga']:,}
-            </h2>
-        </div>
+        <h3>{nama_produk}</h3>
+        <h2 style="color:#ffcc66;">
+            Rp {data['harga']:,}
+        </h2>
         """, unsafe_allow_html=True)
 
         qty = st.number_input(
@@ -224,82 +256,111 @@ for nama_produk, detail in produk_data.items():
             key=nama_produk
         )
 
-        if qty > 0:
-            selected_items.append({
-                "produk": nama_produk,
-                "qty": qty,
-                "harga": detail["harga"]
-            })
+    st.markdown(
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    if qty > 0:
+
+        total_jual = qty * data["harga"]
+
+        produk_terpilih.append({
+
+            "Produk": nama_produk,
+            "Qty": qty,
+            "Total Jual": total_jual
+
+        })
+
+# =====================================================
+# TOTAL
+# =====================================================
+
+grand_qty = sum(
+    x["Qty"]
+    for x in produk_terpilih
+)
+
+grand_jual = sum(
+    x["Total Jual"]
+    for x in produk_terpilih
+)
+
+# =====================================================
+# RINGKASAN
+# =====================================================
 
 st.write("")
+st.markdown("## 🧾 Ringkasan")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.success(
+        f"Total Produk: {grand_qty} pcs"
+    )
+
+with col2:
+    st.info(
+        f"Total Omzet: Rp {grand_jual:,}"
+    )
 
 # =====================================================
 # SIMPAN
 # =====================================================
 
-if st.button("💾 Simpan Distribusi", use_container_width=True):
+if st.button("💾 Simpan Distribusi"):
 
     if nama == "":
         st.warning("Masukkan nama reseller")
-    elif len(selected_items) == 0:
+
+    elif len(produk_terpilih) == 0:
         st.warning("Pilih minimal 1 produk")
+
     else:
 
-        total_qty = 0
-        total_omzet_invoice = 0
         daftar_produk = []
 
-        for item in selected_items:
-
-            subtotal = item["qty"] * item["harga"]
-
-            total_qty += item["qty"]
-            total_omzet_invoice += subtotal
+        for item in produk_terpilih:
 
             daftar_produk.append(
-                f"{item['produk']} ({item['qty']} pcs)"
+                f"{item['Produk']} ({item['Qty']} pcs)"
             )
 
-            st.session_state.riwayat.append({
-                "Tanggal": datetime.now().strftime("%d-%m-%Y %H:%M"),
-                "Nama": nama,
-                "Produk": item["produk"],
-                "Qty": item["qty"],
-                "Harga": item["harga"],
-                "Total": subtotal,
-                "Status": status
-            })
+        gabungan_produk = ", ".join(
+            daftar_produk
+        )
 
-        st.session_state.invoice_terakhir = {
-            "Tanggal": datetime.now().strftime("%d-%m-%Y %H:%M"),
+        invoice_data = {
+
+            "Tanggal":
+            datetime.now().strftime(
+                "%d-%m-%Y %H:%M:%S"
+            ),
+
             "Nama": nama,
-            "Produk": ", ".join(daftar_produk),
-            "Total Qty": total_qty,
-            "Total Omzet": total_omzet_invoice,
+
+            "Produk": gabungan_produk,
+
+            "Total Qty": grand_qty,
+
+            "Total Omzet": grand_jual,
+
             "Status": status
         }
 
-        st.success("Distribusi berhasil disimpan")
+        st.session_state.invoice_terakhir = invoice_data
 
-# =====================================================
-# RIWAYAT
-# =====================================================
+        st.session_state.riwayat.append(
+            invoice_data
+        )
 
-if len(st.session_state.riwayat) > 0:
+        st.success(
+            "Distribusi berhasil disimpan"
+        )
 
-    st.write("")
-    st.markdown("""
-    <div class="main-card">
-    <h2>📋 Riwayat Distribusi</h2>
-    </div>
-    """, unsafe_allow_html=True)
-
-    df = pd.DataFrame(st.session_state.riwayat)
-
-    st.dataframe(
-        df,
-        use_container_width=True
-    )
+        st.rerun()
 
 # =====================================================
 # INVOICE
@@ -315,46 +376,69 @@ if st.session_state.invoice_terakhir is not None:
     st.markdown(f"""
     <div class="invoice-box">
 
-        <h1 style="color:black;">
-            🥟 Distributor Bakpau
-        </h1>
+    <h2>
+    🥟 Distributor Bakpau
+    </h2>
 
-        <hr>
+    <hr>
 
-        <p style="color:black;">
-            <b>Tanggal:</b> {invoice['Tanggal']}
-        </p>
+    <p><b>Tanggal:</b> {invoice['Tanggal']}</p>
 
-        <p style="color:black;">
-            <b>Nama:</b> {invoice['Nama']}
-        </p>
+    <p><b>Nama:</b> {invoice['Nama']}</p>
 
-        <p style="color:black;">
-            <b>Status:</b> {invoice['Status']}
-        </p>
+    <p><b>Status:</b> {invoice['Status']}</p>
 
-        <hr>
+    <hr>
 
-        <h3 style="color:black;">
-            Produk Diambil
-        </h3>
+    <p><b>Produk:</b><br>
+    {invoice['Produk']}
+    </p>
 
-        <p style="color:black;font-size:18px;">
-            {invoice['Produk']}
-        </p>
+    <hr>
 
-        <hr>
+    <h3>
+    Total Produk: {invoice['Total Qty']} pcs
+    </h3>
 
-        <h2 style="color:black;">
-            Total Produk: {invoice['Total Qty']} pcs
-        </h2>
-
-        <h1 style="
-            color:#ff4b4b;
-            font-size:42px;
-        ">
-            Rp {invoice['Total Omzet']:,}
-        </h1>
+    <h1 style="color:#ff4b4b !important;">
+    Rp {invoice['Total Omzet']:,}
+    </h1>
 
     </div>
     """, unsafe_allow_html=True)
+
+# =====================================================
+# RIWAYAT
+# =====================================================
+
+st.write("")
+st.markdown("## 📊 Riwayat Distribusi")
+
+if len(st.session_state.riwayat) == 0:
+
+    st.info(
+        "Belum ada data distribusi"
+    )
+
+else:
+
+    df = pd.DataFrame(
+        st.session_state.riwayat
+    )
+
+    st.dataframe(
+        df,
+        use_container_width=True,
+        height=400
+    )
+
+    csv = df.to_csv(
+        index=False
+    ).encode("utf-8")
+
+    st.download_button(
+        "⬇️ Download CSV",
+        csv,
+        "laporan_distributor.csv",
+        "text/csv"
+    )
