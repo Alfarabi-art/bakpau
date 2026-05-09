@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # =========================================================
-# CSS SIMPLE & CLEAN
+# CSS
 # =========================================================
 
 st.markdown("""
@@ -47,6 +47,7 @@ h1,h2,h3,h4,h5,h6,label,p{
     border-radius:20px;
     margin-bottom:20px;
     border:1px solid rgba(255,255,255,0.08);
+    backdrop-filter:blur(10px);
 }
 
 .stButton button{
@@ -75,22 +76,26 @@ produk_data = {
 
     "Bakpau Coklat": {
         "modal":3000,
-        "jual":5000
+        "jual":5000,
+        "gambar":"https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1200"
     },
 
     "Bakpau Ayam": {
         "modal":4000,
-        "jual":7000
+        "jual":7000,
+        "gambar":"https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=1200"
     },
 
     "Bakpau Kacang Hijau": {
         "modal":3500,
-        "jual":6000
+        "jual":6000,
+        "gambar":"https://images.unsplash.com/photo-1526318896980-cf78c088247c?q=80&w=1200"
     },
 
     "Bakpau Keju": {
         "modal":5000,
-        "jual":8000
+        "jual":8000,
+        "gambar":"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=1200"
     }
 
 }
@@ -155,7 +160,7 @@ with col3:
     )
 
 # =========================================================
-# FORM
+# FORM INPUT
 # =========================================================
 
 st.write("")
@@ -171,7 +176,7 @@ status = st.selectbox(
 )
 
 # =========================================================
-# PRODUK
+# PRODUK DENGAN GAMBAR
 # =========================================================
 
 st.write("")
@@ -181,17 +186,40 @@ produk_terpilih = []
 
 for nama_produk, data in produk_data.items():
 
-    st.markdown("---")
+    st.markdown("""
+    <div class="box">
+    """, unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns([3,2,1])
+    col1, col2 = st.columns([2,1])
+
+    # =====================================================
+    # GAMBAR
+    # =====================================================
 
     with col1:
-        st.markdown(f"### {nama_produk}")
+
+        st.image(
+            data["gambar"],
+            use_container_width=True
+        )
+
+        st.markdown(f"""
+        ### {nama_produk}
+        """)
+
+        st.markdown(f"""
+        ## Rp {data['jual']:,}
+        """)
+
+    # =====================================================
+    # INPUT QTY
+    # =====================================================
 
     with col2:
-        st.markdown(f"## Rp {data['jual']:,}")
 
-    with col3:
+        st.write("")
+        st.write("")
+        st.write("")
 
         qty = st.number_input(
             f"Qty {nama_produk}",
@@ -199,6 +227,14 @@ for nama_produk, data in produk_data.items():
             step=1,
             key=nama_produk
         )
+
+    st.markdown("""
+    </div>
+    """, unsafe_allow_html=True)
+
+    # =====================================================
+    # HITUNG
+    # =====================================================
 
     if qty > 0:
 
