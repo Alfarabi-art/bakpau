@@ -38,8 +38,6 @@ st.markdown("""
     padding-bottom:50px;
 }
 
-/* TEXT */
-
 h1,h2,h3,h4,h5,h6{
     color:white !important;
 }
@@ -47,8 +45,6 @@ h1,h2,h3,h4,h5,h6{
 label,p{
     color:white !important;
 }
-
-/* PRODUCT CARD */
 
 .product-box{
     background:rgba(255,255,255,0.08);
@@ -58,8 +54,6 @@ label,p{
     border:1px solid rgba(255,255,255,0.1);
     backdrop-filter:blur(10px);
 }
-
-/* INVOICE */
 
 .invoice-box{
     background:white;
@@ -77,8 +71,6 @@ label,p{
     color:black !important;
 }
 
-/* BUTTON */
-
 .stButton button{
     width:100%;
     background:#ff4b4b;
@@ -93,8 +85,6 @@ label,p{
 .stButton button:hover{
     background:#ff2e2e;
 }
-
-/* DOWNLOAD BUTTON */
 
 [data-testid="stDownloadButton"] button{
     width:100%;
@@ -111,8 +101,6 @@ label,p{
     background:#00b248 !important;
     color:white !important;
 }
-
-/* MOBILE */
 
 @media(max-width:768px){
 
@@ -197,7 +185,13 @@ total_transaksi = len(
     st.session_state.riwayat
 )
 
-col1, col2, col3 = st.columns(3)
+belum_bayar = sum(
+    x["Total Omzet"]
+    for x in st.session_state.riwayat
+    if x["Status"] == "Belum Bayar"
+)
+
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
     st.metric(
@@ -215,6 +209,12 @@ with col3:
     st.metric(
         "🧾 Total Transaksi",
         total_transaksi
+    )
+
+with col4:
+    st.metric(
+        "💳 Belum Dibayar",
+        f"Rp {belum_bayar:,}"
     )
 
 # =====================================================
@@ -450,7 +450,50 @@ else:
         height=400
     )
 
-    # CSV DOWNLOAD
+    # =====================================================
+    # UPDATE STATUS
+    # =====================================================
+
+    st.write("")
+    st.markdown("## ✅ Update Status Pembayaran")
+
+    for i, item in enumerate(st.session_state.riwayat):
+
+        col1, col2, col3, col4 = st.columns([3,3,2,2])
+
+        with col1:
+            st.write(f"👤 {item['Nama']}")
+
+        with col2:
+            st.write(f"💰 Rp {item['Total Omzet']:,}")
+
+        with col3:
+            st.write(item["Status"])
+
+        with col4:
+
+            if item["Status"] == "Belum Bayar":
+
+                if st.button(
+                    f"Tandai Lunas #{i}",
+                    key=f"lunas_{i}"
+                ):
+
+                    st.session_state.riwayat[i]["Status"] = "Sudah Bayar"
+
+                    st.success(
+                        f"{item['Nama']} sudah lunas"
+                    )
+
+                    st.rerun()
+
+            else:
+
+                st.success("Lunas")
+
+    # =====================================================
+    # DOWNLOAD CSV
+    # =====================================================
 
     csv = df.to_csv(
         index=False
