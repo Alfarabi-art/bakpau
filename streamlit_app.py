@@ -1,199 +1,226 @@
 import streamlit as st
 from datetime import datetime
 
-# ==========================================
+# =========================================
 # CONFIG
-# ==========================================
+# =========================================
 st.set_page_config(
     page_title="Kasir Bakpau",
     page_icon="🥟",
     layout="wide"
 )
 
-# ==========================================
-# BACKGROUND & STYLE
-# ==========================================
-st.markdown("""
-<style>
+# =========================================
+# SESSION STATE
+# =========================================
+if "keranjang" not in st.session_state:
+    st.session_state.keranjang = []
 
-html, body, [class*="css"]{
-    font-family: 'Poppins', sans-serif;
-}
-
-[data-testid="stAppViewContainer"]{
-    background:
-    linear-gradient(
-        rgba(0,0,0,0.45),
-        rgba(0,0,0,0.45)
-    ),
-    url("https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=1600&auto=format&fit=crop");
-
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-}
-
-[data-testid="stHeader"]{
-    background: rgba(0,0,0,0);
-}
-
-.block-container{
-    padding-top: 2rem;
-}
-
-h1,h2,h3,h4,h5,h6,p,label{
-    color:white !important;
-}
-
-.stButton>button{
-    background:#D62828;
-    color:white;
-    border:none;
-    border-radius:12px;
-    padding:12px;
-    font-weight:bold;
-}
-
-.stButton>button:hover{
-    background:#B71C1C;
-    color:white;
-}
-
-[data-testid="stNumberInput"] input{
-    border-radius:12px;
-}
-
-[data-testid="stSelectbox"]{
-    border-radius:12px;
-}
-
-@media (max-width: 768px){
-
-    h1{
-        font-size:38px !important;
-    }
-
-    .block-container{
-        padding-top:1rem;
-        padding-left:1rem;
-        padding-right:1rem;
-    }
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-# ==========================================
+# =========================================
 # DATA MENU
-# ==========================================
+# =========================================
 menu = [
     {
-        "id": 1,
         "nama": "Bakpau Coklat",
         "harga": 5000,
-        "gambar": "https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1200&auto=format&fit=crop"
+        "gambar": "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=1200&auto=format&fit=crop"
     },
     {
-        "id": 2,
         "nama": "Bakpau Ayam",
         "harga": 7000,
         "gambar": "https://images.unsplash.com/photo-1563245372-f21724e3856d?q=80&w=1200&auto=format&fit=crop"
     },
     {
-        "id": 3,
         "nama": "Bakpau Kacang Hijau",
-        "harga": 5000,
-        "gambar": "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=1200&auto=format&fit=crop"
+        "harga": 6000,
+        "gambar": "https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1200&auto=format&fit=crop"
     },
     {
-        "id": 4,
         "nama": "Bakpau Keju",
-        "harga": 6000,
-        "gambar": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop"
+        "harga": 8000,
+        "gambar": "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop"
     }
 ]
 
-# ==========================================
-# SESSION STATE
-# ==========================================
-if "keranjang" not in st.session_state:
-    st.session_state.keranjang = []
-
-# ==========================================
-# HEADER
-# ==========================================
+# =========================================
+# BACKGROUND + STYLE
+# =========================================
 st.markdown("""
-<h1 style='font-size:65px; font-weight:bold;'>
-🥟 Kasir Bakpau
-</h1>
+<style>
+
+.stApp {
+    background:
+    linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+    url("https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=1600&auto=format&fit=crop");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* HIDE STREAMLIT */
+#MainMenu {visibility:hidden;}
+footer {visibility:hidden;}
+header {visibility:hidden;}
+
+/* TEXT */
+h1, h2, h3, h4, h5, h6, p, label {
+    color:white !important;
+}
+
+/* INPUT */
+.stNumberInput input,
+.stSelectbox select,
+.stTextInput input {
+    border-radius:15px !important;
+}
+
+/* BUTTON */
+.stButton button {
+    width:100%;
+    border:none;
+    border-radius:16px;
+    background:#D62828;
+    color:white;
+    font-weight:bold;
+    padding:12px;
+    font-size:18px;
+    transition:0.3s;
+}
+
+.stButton button:hover {
+    background:#a61c1c;
+    transform:scale(1.02);
+}
+
+/* MOBILE */
+@media(max-width:768px){
+
+    .stApp{
+        background-attachment:scroll;
+    }
+
+    h1{
+        font-size:34px !important;
+    }
+
+    h2{
+        font-size:28px !important;
+    }
+
+}
+
+</style>
 """, unsafe_allow_html=True)
 
-# ==========================================
-# LAYOUT
-# ==========================================
-col1, col2 = st.columns([1.2, 1])
+# =========================================
+# HEADER
+# =========================================
+st.markdown("""
+<div style="
+    display:flex;
+    align-items:center;
+    gap:20px;
+    margin-bottom:30px;
+">
+    <div style="font-size:70px;">🥟</div>
 
-# ==========================================
+    <div>
+        <div style="
+            color:white;
+            font-size:60px;
+            font-weight:bold;
+        ">
+            Kasir Bakpau
+        </div>
+
+        <div style="
+            color:#dddddd;
+            font-size:18px;
+        ">
+            Fresh & Warm Everyday
+        </div>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+# =========================================
+# LAYOUT
+# =========================================
+col1, col2 = st.columns([1.1, 1])
+
+# =========================================
 # MENU
-# ==========================================
+# =========================================
 with col1:
 
     st.markdown("## Menu Bakpau")
 
-    for item in menu:
+    for i, item in enumerate(menu):
 
-        with st.container(border=True):
+        with st.container():
 
-            st.image(
-                item["gambar"],
-                use_container_width=True
-            )
+            st.markdown(f"""
+            <div style="
+                background:rgba(255,255,255,0.08);
+                backdrop-filter:blur(10px);
+                border-radius:25px;
+                padding:20px;
+                margin-bottom:25px;
+                border:1px solid rgba(255,255,255,0.15);
+            ">
+            """, unsafe_allow_html=True)
 
-            st.markdown(
-                f"""
-                <h2 style='margin-top:15px;'>
+            st.image(item["gambar"])
+
+            st.markdown(f"""
+            <div style="
+                color:white;
+                font-size:38px;
+                font-weight:bold;
+                margin-top:15px;
+            ">
                 {item['nama']}
-                </h2>
-                """,
-                unsafe_allow_html=True
-            )
+            </div>
 
-            st.markdown(
-                f"""
-                <h3 style='color:#FFD166;'>
+            <div style="
+                color:#FFD166;
+                font-size:28px;
+                font-weight:bold;
+                margin-top:10px;
+                margin-bottom:15px;
+            ">
                 Rp {item['harga']:,}
-                </h3>
-                """,
-                unsafe_allow_html=True
-            )
+            </div>
+            """, unsafe_allow_html=True)
 
             qty = st.number_input(
                 f"Qty {item['nama']}",
                 min_value=1,
                 value=1,
-                key=f"qty_{item['id']}"
+                key=f"qty_{i}"
             )
 
             if st.button(
                 f"Tambah {item['nama']}",
-                key=f"btn_{item['id']}",
-                use_container_width=True
+                key=f"btn_{i}"
             ):
 
                 subtotal = qty * item["harga"]
 
                 st.session_state.keranjang.append({
                     "nama": item["nama"],
-                    "qty": qty,
                     "harga": item["harga"],
+                    "qty": qty,
                     "subtotal": subtotal
                 })
 
-                st.success(f"{item['nama']} berhasil ditambahkan")
+                st.success(f"{item['nama']} ditambahkan")
 
-# ==========================================
+            st.markdown("</div>", unsafe_allow_html=True)
+
+# =========================================
 # KERANJANG
-# ==========================================
+# =========================================
 with col2:
 
     st.markdown("## Keranjang")
@@ -206,36 +233,55 @@ with col2:
 
     else:
 
-        for item in st.session_state.keranjang:
+        for i, item in enumerate(st.session_state.keranjang):
 
             total += item["subtotal"]
 
             st.markdown(
                 f"""
                 <div style="
-                    background:rgba(255,255,255,0.12);
+                    background:rgba(255,255,255,0.13);
                     padding:18px;
-                    border-radius:18px;
+                    border-radius:20px;
                     margin-bottom:12px;
-                    backdrop-filter:blur(8px);
+                    backdrop-filter:blur(10px);
+                    border:1px solid rgba(255,255,255,0.15);
                 ">
 
                     <div style="
                         display:flex;
                         justify-content:space-between;
-                        color:white;
-                        font-size:20px;
-                        font-weight:bold;
+                        align-items:center;
                     ">
-                        <span>{item['nama']}</span>
-                        <span>Rp {item['subtotal']:,}</span>
-                    </div>
 
-                    <div style="
-                        color:#ddd;
-                        margin-top:6px;
-                    ">
-                        {item['qty']} x Rp {item['harga']:,}
+                        <div>
+
+                            <div style="
+                                color:white;
+                                font-size:22px;
+                                font-weight:bold;
+                            ">
+                                {item['nama']}
+                            </div>
+
+                            <div style="
+                                color:#dddddd;
+                                margin-top:5px;
+                                font-size:15px;
+                            ">
+                                {item['qty']} x Rp {item['harga']:,}
+                            </div>
+
+                        </div>
+
+                        <div style="
+                            color:#FFD166;
+                            font-size:22px;
+                            font-weight:bold;
+                        ">
+                            Rp {item['subtotal']:,}
+                        </div>
+
                     </div>
 
                 </div>
@@ -243,15 +289,25 @@ with col2:
                 unsafe_allow_html=True
             )
 
+    # =====================================
+    # TOTAL
+    # =====================================
     st.markdown(
         f"""
-        <h1 style='margin-top:30px;'>
-        Total : Rp {total:,}
+        <h1 style='
+            color:white;
+            margin-top:25px;
+            margin-bottom:25px;
+        '>
+            Total : Rp {total:,}
         </h1>
         """,
         unsafe_allow_html=True
     )
 
+    # =====================================
+    # PEMBAYARAN
+    # =====================================
     metode = st.selectbox(
         "Metode Pembayaran",
         ["Cash", "QRIS", "Transfer"]
@@ -268,177 +324,190 @@ with col2:
     if uang > 0:
 
         if kembalian >= 0:
-
             st.success(f"Kembalian : Rp {kembalian:,}")
+        else:
+            st.error("Uang kurang")
+
+    # =====================================
+    # CETAK STRUK
+    # =====================================
+    if st.button("Cetak Struk"):
+
+        if len(st.session_state.keranjang) == 0:
+
+            st.warning("Keranjang kosong")
+
+        elif uang < total:
+
+            st.error("Uang pembayaran kurang")
 
         else:
 
-            st.error("Uang kurang")
+            waktu = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 
-    # ==========================================
-    # CETAK STRUK
-    # ==========================================
-    if st.button("Cetak Struk", use_container_width=True):
+            detail_item = ""
 
-        waktu = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            for item in st.session_state.keranjang:
 
-        detail = ""
+                detail_item += f"""
+                <div style="
+                    padding:15px 0;
+                    border-bottom:1px dashed #cccccc;
+                ">
 
-        for item in st.session_state.keranjang:
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        font-weight:bold;
+                        font-size:18px;
+                    ">
 
-            detail += f"""
+                        <span>{item['nama']}</span>
+                        <span>Rp {item['subtotal']:,}</span>
+
+                    </div>
+
+                    <div style="
+                        color:#777;
+                        margin-top:5px;
+                        font-size:14px;
+                    ">
+                        {item['qty']} x Rp {item['harga']:,}
+                    </div>
+
+                </div>
+                """
+
+            receipt_html = f"""
             <div style="
-                margin-bottom:15px;
-                padding-bottom:12px;
-                border-bottom:1px dashed #ddd;
+                background:white;
+                padding:35px;
+                border-radius:25px;
+                margin-top:25px;
+                color:black;
+                box-shadow:0 10px 30px rgba(0,0,0,0.35);
             ">
+
+                <div style="text-align:center;">
+
+                    <div style="font-size:70px;">
+                        🥟
+                    </div>
+
+                    <div style="
+                        font-size:34px;
+                        font-weight:bold;
+                        color:#D62828;
+                    ">
+                        TOKO BAKPAU
+                    </div>
+
+                    <div style="
+                        color:#666;
+                        margin-top:5px;
+                        font-size:15px;
+                    ">
+                        Fresh & Warm Everyday
+                    </div>
+
+                </div>
+
+                <hr style="
+                    margin-top:25px;
+                    margin-bottom:25px;
+                ">
 
                 <div style="
                     display:flex;
                     justify-content:space-between;
-                    font-size:18px;
-                    font-weight:bold;
-                    color:#222;
+                    color:#555;
+                    font-size:15px;
+                    margin-bottom:20px;
                 ">
-                    <span>{item['nama']}</span>
-                    <span>Rp {item['subtotal']:,}</span>
+
+                    <span>Tanggal</span>
+                    <span>{waktu}</span>
+
+                </div>
+
+                {detail_item}
+
+                <div style="
+                    margin-top:25px;
+                    padding-top:20px;
+                    border-top:2px dashed #cccccc;
+                ">
+
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        font-size:24px;
+                        font-weight:bold;
+                        margin-bottom:15px;
+                    ">
+
+                        <span>TOTAL</span>
+                        <span>Rp {total:,}</span>
+
+                    </div>
+
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        margin-bottom:10px;
+                        color:#555;
+                    ">
+
+                        <span>PEMBAYARAN</span>
+                        <span>{metode}</span>
+
+                    </div>
+
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        margin-bottom:10px;
+                        color:#555;
+                    ">
+
+                        <span>TUNAI</span>
+                        <span>Rp {uang:,}</span>
+
+                    </div>
+
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        margin-top:18px;
+                        font-size:22px;
+                        font-weight:bold;
+                        color:green;
+                    ">
+
+                        <span>KEMBALIAN</span>
+                        <span>Rp {kembalian:,}</span>
+
+                    </div>
+
                 </div>
 
                 <div style="
+                    text-align:center;
+                    margin-top:35px;
                     color:#777;
-                    margin-top:6px;
                     font-size:15px;
                 ">
-                    {item['qty']} x Rp {item['harga']:,}
+                    Terima Kasih 🙏
+                    <br>
+                    Selamat menikmati bakpau 🥟
                 </div>
 
             </div>
             """
 
-        receipt_html = f"""
-        <div style="
-            background:white;
-            padding:35px;
-            border-radius:28px;
-            margin-top:20px;
-            color:black;
-            box-shadow:0 12px 35px rgba(0,0,0,0.35);
-        ">
+            st.success("Struk berhasil dicetak")
 
-            <div style="
-                text-align:center;
-                margin-bottom:25px;
-            ">
-
-                <div style="
-                    font-size:65px;
-                ">
-                    🥟
-                </div>
-
-                <div style="
-                    font-size:34px;
-                    font-weight:bold;
-                    color:#D62828;
-                ">
-                    TOKO BAKPAU
-                </div>
-
-                <div style="
-                    color:#777;
-                    margin-top:5px;
-                    font-size:15px;
-                ">
-                    Fresh & Warm Every Day
-                </div>
-
-            </div>
-
-            <hr>
-
-            <div style="
-                display:flex;
-                justify-content:space-between;
-                margin-top:15px;
-                margin-bottom:25px;
-                color:#555;
-                font-size:15px;
-            ">
-                <span>Tanggal</span>
-                <span>{waktu}</span>
-            </div>
-
-            {detail}
-
-            <div style="
-                margin-top:25px;
-                padding-top:20px;
-                border-top:2px dashed #ddd;
-            ">
-
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    margin-bottom:12px;
-                    font-size:22px;
-                    font-weight:bold;
-                ">
-                    <span>TOTAL</span>
-                    <span>Rp {total:,}</span>
-                </div>
-
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    margin-bottom:10px;
-                    color:#555;
-                ">
-                    <span>PEMBAYARAN</span>
-                    <span>{metode}</span>
-                </div>
-
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    margin-bottom:10px;
-                    color:#555;
-                ">
-                    <span>TUNAI</span>
-                    <span>Rp {uang:,}</span>
-                </div>
-
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    margin-bottom:10px;
-                    color:green;
-                    font-weight:bold;
-                    font-size:19px;
-                ">
-                    <span>KEMBALIAN</span>
-                    <span>Rp {kembalian:,}</span>
-                </div>
-
-            </div>
-
-            <div style="
-                text-align:center;
-                margin-top:35px;
-                color:#666;
-                font-size:15px;
-            ">
-                Terima Kasih 🙏
-                <br>
-                Selamat menikmati bakpau 🥟
-            </div>
-
-        </div>
-        """
-
-        st.success("Struk berhasil dicetak")
-
-        # PENTING
-        st.markdown(
-            receipt_html,
-            unsafe_allow_html=True
-        )
+            st.markdown(
+                receipt_html,
+                unsafe_allow_html=True
+            )
