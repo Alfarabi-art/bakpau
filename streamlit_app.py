@@ -1,9 +1,9 @@
 import streamlit as st
 from datetime import datetime
 
-# =====================================================
-# PAGE CONFIG
-# =====================================================
+# ======================================================
+# CONFIG
+# ======================================================
 
 st.set_page_config(
     page_title="Kasir Bakpau",
@@ -11,9 +11,9 @@ st.set_page_config(
     layout="wide"
 )
 
-# =====================================================
+# ======================================================
 # CSS
-# =====================================================
+# ======================================================
 
 st.markdown("""
 <style>
@@ -32,30 +32,36 @@ st.markdown("""
     padding-top:2rem;
 }
 
+/* TEXT */
 h1,h2,h3,h4,h5,h6,p,label{
     color:white !important;
 }
 
+/* CARD MENU */
 .menu-box{
     background:rgba(255,255,255,0.08);
     padding:20px;
-    border-radius:20px;
+    border-radius:22px;
     margin-bottom:25px;
     backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.15);
 }
 
+/* CART */
 .cart-box{
-    background:rgba(255,255,255,0.10);
+    background:rgba(255,255,255,0.12);
     padding:18px;
     border-radius:18px;
     margin-bottom:15px;
     backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,0.12);
 }
 
+/* BUTTON */
 .stButton button{
     width:100%;
     border:none;
-    border-radius:12px;
+    border-radius:14px;
     background:#e63946;
     color:white;
     font-weight:bold;
@@ -67,21 +73,26 @@ h1,h2,h3,h4,h5,h6,p,label{
     background:#c1121f;
 }
 
+/* INPUT */
+.stNumberInput input{
+    border-radius:12px !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
-# =====================================================
+# ======================================================
 # HEADER
-# =====================================================
+# ======================================================
 
 st.markdown("""
 # 🥟 Kasir Bakpau
 ### Fresh & Warm Everyday
 """)
 
-# =====================================================
+# ======================================================
 # DATA MENU
-# =====================================================
+# ======================================================
 
 menu = [
 
@@ -111,26 +122,26 @@ menu = [
 
 ]
 
-# =====================================================
-# SESSION STATE
-# =====================================================
+# ======================================================
+# SESSION
+# ======================================================
 
 if "cart" not in st.session_state:
     st.session_state.cart = []
 
-# =====================================================
+# ======================================================
 # LAYOUT
-# =====================================================
+# ======================================================
 
 col1, col2 = st.columns([1.2,1])
 
-# =====================================================
+# ======================================================
 # MENU
-# =====================================================
+# ======================================================
 
 with col1:
 
-    st.markdown("## 🍽️ Menu")
+    st.markdown("## 🍽️ Menu Bakpau")
 
     for i, item in enumerate(menu):
 
@@ -146,12 +157,10 @@ with col1:
                 use_container_width=True
             )
 
-            st.markdown(
-                f"### {item['nama']}"
-            )
+            st.markdown(f"## {item['nama']}")
 
             st.markdown(
-                f"## Rp {item['harga']:,}"
+                f"### Rp {item['harga']:,}"
             )
 
             qty = st.number_input(
@@ -180,9 +189,9 @@ with col1:
                 unsafe_allow_html=True
             )
 
-# =====================================================
+# ======================================================
 # KERANJANG
-# =====================================================
+# ======================================================
 
 with col2:
 
@@ -240,9 +249,9 @@ with col2:
 
     kembali = bayar - total
 
-    # =====================================================
+    # ======================================================
     # CETAK STRUK
-    # =====================================================
+    # ======================================================
 
     if st.button("🧾 Cetak Struk"):
 
@@ -257,89 +266,104 @@ with col2:
         else:
 
             tanggal = datetime.now().strftime(
-                "%Y-%m-%d %H:%M:%S"
+                "%d-%m-%Y %H:%M:%S"
             )
 
             st.success("Struk berhasil dicetak")
 
             struk_html = f"""
 <div style="
-background:white;
-padding:30px;
+background:#ffffff;
+padding:35px;
 border-radius:25px;
-color:black;
-box-shadow:0 10px 30px rgba(0,0,0,0.3);
+color:#111;
+box-shadow:0 15px 40px rgba(0,0,0,0.45);
 margin-top:20px;
+border:4px solid #ffb703;
 ">
+
+<!-- HEADER -->
 
 <div style="text-align:center;">
 
 <div style="
-font-size:70px;
+font-size:85px;
+margin-bottom:10px;
 ">
 🥟
 </div>
 
-<h2 style="
-margin:0;
-font-size:34px;
-color:#D62828;
+<div style="
+font-size:42px;
+font-weight:900;
+color:#d62828;
+letter-spacing:1px;
 ">
 TOKO BAKPAU
-</h2>
+</div>
 
 <div style="
 color:#666;
-font-size:14px;
-margin-top:5px;
+font-size:17px;
+margin-top:8px;
+font-weight:500;
 ">
 Fresh & Warm Everyday
 </div>
 
 </div>
 
-<hr style="margin:20px 0;">
+<hr style="
+margin-top:25px;
+margin-bottom:25px;
+border:1px dashed #bbb;
+">
+
+<!-- INFO -->
 
 <div style="
 display:flex;
 justify-content:space-between;
-font-size:14px;
-margin-bottom:15px;
+font-size:15px;
+margin-bottom:10px;
 color:#444;
 ">
 
-<span>Tanggal</span>
+<span><b>Tanggal</b></span>
 <span>{tanggal}</span>
 
 </div>
 
-<hr style="margin:15px 0;">
+<hr style="
+margin-top:15px;
+margin-bottom:20px;
+border:1px dashed #ddd;
+">
 """
 
-            # =====================================================
+            # ======================================================
             # ITEM STRUK
-            # =====================================================
+            # ======================================================
 
             for item in st.session_state.cart:
 
-                subtotal = (
-                    item["harga"]
-                    * item["qty"]
-                )
+                subtotal = item["harga"] * item["qty"]
 
                 struk_html += f"""
 
 <div style="
-margin-bottom:18px;
-padding-bottom:12px;
-border-bottom:1px dashed #ccc;
+padding:14px;
+margin-bottom:14px;
+background:#fff8ef;
+border-radius:15px;
+border-left:6px solid #ffb703;
 ">
 
 <div style="
+font-size:20px;
 font-weight:bold;
-font-size:16px;
-margin-bottom:8px;
 color:#222;
+margin-bottom:8px;
 ">
 {item['nama']}
 </div>
@@ -347,7 +371,7 @@ color:#222;
 <div style="
 display:flex;
 justify-content:space-between;
-font-size:15px;
+font-size:16px;
 color:#444;
 ">
 
@@ -355,7 +379,10 @@ color:#444;
 {item['qty']} x Rp {item['harga']:,}
 </div>
 
-<div>
+<div style="
+font-weight:bold;
+color:#d62828;
+">
 Rp {subtotal:,}
 </div>
 
@@ -364,31 +391,44 @@ Rp {subtotal:,}
 </div>
 """
 
-            # =====================================================
+            # ======================================================
             # TOTAL
-            # =====================================================
+            # ======================================================
 
             struk_html += f"""
 
-<div style="margin-top:20px;">
+<hr style="
+margin-top:20px;
+margin-bottom:20px;
+border:1px dashed #bbb;
+">
+
+<div style="
+background:#fff3cd;
+padding:20px;
+border-radius:18px;
+">
 
 <div style="
 display:flex;
 justify-content:space-between;
-margin-bottom:10px;
-font-size:18px;
+font-size:26px;
+font-weight:bold;
+margin-bottom:18px;
+color:#111;
 ">
 
-<div><b>TOTAL</b></div>
-<div><b>Rp {total:,}</b></div>
+<div>TOTAL</div>
+<div>Rp {total:,}</div>
 
 </div>
 
 <div style="
 display:flex;
 justify-content:space-between;
-margin-bottom:10px;
-font-size:15px;
+font-size:18px;
+margin-bottom:12px;
+color:#333;
 ">
 
 <div>PEMBAYARAN</div>
@@ -399,8 +439,9 @@ font-size:15px;
 <div style="
 display:flex;
 justify-content:space-between;
-margin-bottom:10px;
-font-size:15px;
+font-size:18px;
+margin-bottom:12px;
+color:#333;
 ">
 
 <div>TUNAI</div>
@@ -411,9 +452,10 @@ font-size:15px;
 <div style="
 display:flex;
 justify-content:space-between;
-font-size:20px;
-font-weight:bold;
+font-size:30px;
+font-weight:900;
 color:green;
+margin-top:20px;
 ">
 
 <div>KEMBALIAN</div>
@@ -423,16 +465,30 @@ color:green;
 
 </div>
 
-<hr style="margin:20px 0;">
+<!-- FOOTER -->
 
 <div style="
 text-align:center;
-font-size:14px;
-color:#666;
+margin-top:35px;
+padding-top:20px;
+border-top:2px dashed #ccc;
 ">
 
-Terima Kasih 🙏 <br>
-Selamat menikmati bakpau 🥟
+<div style="
+font-size:22px;
+font-weight:bold;
+color:#d62828;
+margin-bottom:10px;
+">
+🙏 Terima Kasih 🙏
+</div>
+
+<div style="
+font-size:16px;
+color:#666;
+">
+Selamat menikmati bakpau hangat 🥟
+</div>
 
 </div>
 
