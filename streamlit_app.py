@@ -37,26 +37,6 @@ h1,h2,h3,h4,h5,h6,p,label{
     color:white !important;
 }
 
-/* CARD MENU */
-.menu-box{
-    background:rgba(255,255,255,0.08);
-    padding:20px;
-    border-radius:22px;
-    margin-bottom:25px;
-    backdrop-filter:blur(10px);
-    border:1px solid rgba(255,255,255,0.15);
-}
-
-/* CART */
-.cart-box{
-    background:rgba(255,255,255,0.12);
-    padding:18px;
-    border-radius:18px;
-    margin-bottom:15px;
-    backdrop-filter:blur(8px);
-    border:1px solid rgba(255,255,255,0.12);
-}
-
 /* BUTTON */
 .stButton button{
     width:100%;
@@ -123,7 +103,7 @@ menu = [
 ]
 
 # ======================================================
-# SESSION
+# SESSION STATE
 # ======================================================
 
 if "cart" not in st.session_state:
@@ -146,11 +126,6 @@ with col1:
     for i, item in enumerate(menu):
 
         with st.container():
-
-            st.markdown(
-                '<div class="menu-box">',
-                unsafe_allow_html=True
-            )
 
             st.image(
                 item["gambar"],
@@ -184,10 +159,7 @@ with col1:
 
                 st.success("Berhasil ditambahkan")
 
-            st.markdown(
-                '</div>',
-                unsafe_allow_html=True
-            )
+            st.divider()
 
 # ======================================================
 # KERANJANG
@@ -209,30 +181,54 @@ with col2:
 
             total += item["subtotal"]
 
-            st.markdown(
-                '<div class="cart-box">',
-                unsafe_allow_html=True
-            )
+            st.markdown(f"""
+<div style="
+background:rgba(255,255,255,0.10);
+padding:18px;
+border-radius:18px;
+margin-bottom:15px;
+backdrop-filter:blur(8px);
+border:1px solid rgba(255,255,255,0.12);
+">
 
-            c1, c2 = st.columns([3,1])
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+">
 
-            with c1:
+<div>
 
-                st.markdown(f"""
-### {item['nama']}
+<div style="
+font-size:22px;
+font-weight:bold;
+color:white;
+">
+{item['nama']}
+</div>
+
+<div style="
+color:#dddddd;
+margin-top:5px;
+font-size:16px;
+">
 {item['qty']} x Rp {item['harga']:,}
-""")
+</div>
 
-            with c2:
+</div>
 
-                st.markdown(
-                    f"### Rp {item['subtotal']:,}"
-                )
+<div style="
+font-size:22px;
+font-weight:bold;
+color:white;
+">
+Rp {item['subtotal']:,}
+</div>
 
-            st.markdown(
-                '</div>',
-                unsafe_allow_html=True
-            )
+</div>
+
+</div>
+""", unsafe_allow_html=True)
 
     st.markdown(f"# Total : Rp {total:,}")
 
