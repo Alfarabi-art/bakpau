@@ -238,172 +238,186 @@ with col2:
 
     kembali = bayar - total
 
-    # =====================================================
-    # CETAK STRUK
-    # =====================================================
+    # =====================================
+        # CETAK STRUK
+        # =====================================
+        if st.button("Cetak Struk"):
 
-    if st.button("🧾 Cetak Struk"):
+            if total == 0:
 
-        now = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+                st.warning("Keranjang kosong")
 
-        receipt_html = f"""
-        <div style="
-            background:white;
-            padding:35px;
-            border-radius:25px;
-            color:black;
-            box-shadow:0 10px 30px rgba(0,0,0,0.3);
-            margin-top:25px;
-        ">
+            elif uang < total:
 
-            <div style="
-                text-align:center;
-                margin-bottom:25px;
-            ">
+                st.error("Uang belum cukup")
 
-                <div style="font-size:70px;">
-                    🥟
-                </div>
+            else:
 
-                <div style="
-                    font-size:34px;
-                    font-weight:bold;
-                    color:#D62828;
-                ">
-                    TOKO BAKPAU
-                </div>
+                tanggal = datetime.now().strftime(
+                    "%Y-%m-%d %H:%M:%S"
+                )
 
-                <div style="
-                    color:gray;
-                    margin-top:5px;
-                ">
-                    Fresh & Warm Every Day
-                </div>
+                st.success("Struk berhasil dicetak")
 
-            </div>
+                struk_html = f"""
+<div class="struk-box">
 
-            <hr>
+<div style="text-align:center;">
 
-            <div style="
-                display:flex;
-                justify-content:space-between;
-                margin-top:15px;
-                margin-bottom:25px;
-                color:#444;
-            ">
-                <span>Tanggal</span>
-                <span>{now}</span>
-            </div>
-        """
+<h2 style="
+margin:0;
+font-size:28px;
+">
+🥥 TOKO ES KELAPA LANJAI
+</h2>
 
-        # =====================================================
-        # ITEM STRUK
-        # =====================================================
+<div style="
+color:#666;
+font-size:14px;
+margin-top:5px;
+">
+Fresh Coconut Drink
+</div>
 
-        for item in st.session_state.cart:
+</div>
 
-            receipt_html += f"""
-            <div style="
-                margin-bottom:15px;
-            ">
+<hr style="margin:15px 0;">
 
-                <div style="
-                    font-weight:bold;
-                    font-size:17px;
-                    color:#222;
-                ">
-                    {item['nama']}
-                </div>
+<div style="
+display:flex;
+justify-content:space-between;
+font-size:14px;
+margin-bottom:15px;
+">
 
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    color:#666;
-                    margin-top:5px;
-                ">
-                    <span>
-                        {item['qty']} x Rp {item['harga']:,}
-                    </span>
+<span>Tanggal</span>
+<span>{tanggal}</span>
 
-                    <span>
-                        Rp {item['subtotal']:,}
-                    </span>
-                </div>
+</div>
 
-            </div>
-            """
+<hr style="margin:15px 0;">
+"""
 
-        # =====================================================
-        # TOTAL
-        # =====================================================
+                for item in st.session_state.keranjang:
 
-        receipt_html += f"""
+                    subtotal = (
+                        item["harga"]
+                        * item["qty"]
+                    )
 
-            <hr>
+                    struk_html += f"""
 
-            <div style="
-                margin-top:20px;
-                font-size:18px;
-            ">
+<div style="
+margin-bottom:18px;
+padding-bottom:12px;
+border-bottom:1px dashed #ccc;
+">
 
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    margin-bottom:10px;
-                ">
-                    <b>TOTAL</b>
-                    <b>Rp {total:,}</b>
-                </div>
+<div style="
+font-weight:bold;
+font-size:16px;
+margin-bottom:8px;
+">
+{item['nama']}
+</div>
 
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    margin-bottom:10px;
-                ">
-                    <span>PEMBAYARAN</span>
-                    <span>{payment}</span>
-                </div>
+<div style="
+display:flex;
+justify-content:space-between;
+font-size:15px;
+">
 
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    margin-bottom:10px;
-                ">
-                    <span>TUNAI</span>
-                    <span>Rp {bayar:,}</span>
-                </div>
+<div>
+{item['qty']} x Rp {item['harga']:,}
+</div>
 
-                <div style="
-                    display:flex;
-                    justify-content:space-between;
-                    margin-bottom:10px;
-                    color:green;
-                    font-weight:bold;
-                ">
-                    <span>KEMBALIAN</span>
-                    <span>Rp {kembali:,}</span>
-                </div>
+<div>
+Rp {subtotal:,}
+</div>
 
-            </div>
+</div>
 
-            <div style="
-                text-align:center;
-                margin-top:30px;
-                color:#666;
-            ">
-                Terima Kasih 🙏
-                <br>
-                Selamat menikmati bakpau 🥟
-            </div>
+</div>
+"""
 
-        </div>
-        """
+                struk_html += f"""
 
-        # =====================================================
-        # TAMPILKAN STRUK
-        # =====================================================
+<div style="margin-top:20px;">
 
-        st.markdown(
-            receipt_html,
-            unsafe_allow_html=True
-        )
+<div style="
+display:flex;
+justify-content:space-between;
+margin-bottom:10px;
+font-size:16px;
+">
+
+<div><b>TOTAL</b></div>
+<div><b>Rp {total:,}</b></div>
+
+</div>
+
+<div style="
+display:flex;
+justify-content:space-between;
+margin-bottom:10px;
+">
+
+<div>PEMBAYARAN</div>
+<div>{metode}</div>
+
+</div>
+
+<div style="
+display:flex;
+justify-content:space-between;
+margin-bottom:10px;
+">
+
+<div>TUNAI</div>
+<div>Rp {uang:,}</div>
+
+</div>
+
+<div style="
+display:flex;
+justify-content:space-between;
+font-size:18px;
+font-weight:bold;
+color:green;
+">
+
+<div>KEMBALIAN</div>
+<div>Rp {kembalian:,}</div>
+
+</div>
+
+</div>
+
+<hr style="margin:20px 0;">
+
+<div style="
+text-align:center;
+font-size:14px;
+color:#666;
+">
+
+Terima Kasih 🙏 <br>
+Semoga harimu segar 🥥
+
+</div>
+
+</div>
+"""
+
+                st.markdown(
+                    struk_html,
+                    unsafe_allow_html=True
+                )
+
+                st.session_state.riwayat.append({
+                    "tanggal": tanggal,
+                    "total": total,
+                    "metode": metode
+                })
+
+                st.session_state.keranjang = []
