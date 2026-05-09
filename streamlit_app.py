@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 # ======================================================
-# BACKGROUND
+# CSS
 # ======================================================
 
 background_image = "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=1974&auto=format&fit=crop"
@@ -22,7 +22,7 @@ st.markdown(f"""
 
 .stApp {{
     background-image:
-        linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
         url("{background_image}");
     background-size: cover;
     background-position: center;
@@ -38,55 +38,45 @@ h1,h2,h3,h4,h5,h6,p,label {{
 }}
 
 .menu-card {{
-    background: rgba(255,255,255,0.10);
-    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.08);
     padding:20px;
     border-radius:20px;
     margin-bottom:25px;
+    backdrop-filter: blur(10px);
 }}
 
 .menu-image {{
     width:100%;
-    border-radius:18px;
+    border-radius:20px;
 }}
 
-.cart-item {{
+.cart-card {{
     background: rgba(255,255,255,0.12);
-    backdrop-filter: blur(10px);
-    padding:20px;
-    border-radius:20px;
+    padding:18px;
+    border-radius:18px;
     margin-bottom:15px;
 }}
 
-.receipt-box {{
+.receipt {{
     background:white;
     color:black;
     padding:30px;
-    border-radius:25px;
+    border-radius:20px;
     margin-top:20px;
 }}
 
 .stButton button {{
     width:100%;
     border:none;
-    border-radius:14px;
+    border-radius:12px;
     background:#e63946;
     color:white;
     font-weight:bold;
     padding:12px;
-    font-size:16px;
 }}
 
 .stButton button:hover {{
     background:#c1121f;
-}}
-
-[data-testid="stNumberInput"] input {{
-    border-radius:12px;
-}}
-
-[data-testid="stSelectbox"] div {{
-    border-radius:12px;
 }}
 
 </style>
@@ -96,12 +86,12 @@ h1,h2,h3,h4,h5,h6,p,label {{
 # HEADER
 # ======================================================
 
-header_html = """
+st.markdown("""
 <div style="
-    display:flex;
-    align-items:center;
-    gap:20px;
-    margin-bottom:30px;
+display:flex;
+align-items:center;
+gap:20px;
+margin-bottom:30px;
 ">
 
     <div style="font-size:70px;">
@@ -128,12 +118,10 @@ header_html = """
     </div>
 
 </div>
-"""
-
-st.markdown(header_html, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # ======================================================
-# MENU DATA
+# DATA MENU
 # ======================================================
 
 menu = [
@@ -190,7 +178,7 @@ with col1:
             <div style="margin-top:20px;">
 
                 <div style="
-                    font-size:34px;
+                    font-size:32px;
                     font-weight:bold;
                     color:white;
                 ">
@@ -198,10 +186,10 @@ with col1:
                 </div>
 
                 <div style="
-                    font-size:26px;
+                    font-size:24px;
                     color:#ffd166;
-                    margin-top:10px;
                     font-weight:bold;
+                    margin-top:10px;
                 ">
                     Rp {item['harga']:,}
                 </div>
@@ -227,7 +215,7 @@ with col1:
                 "subtotal": item["harga"] * qty
             })
 
-            st.success(f"{item['nama']} ditambahkan")
+            st.success(f"{item['nama']} berhasil ditambahkan")
 
 # ======================================================
 # KERANJANG
@@ -250,7 +238,7 @@ with col2:
             total += item["subtotal"]
 
             st.markdown(f"""
-            <div class="cart-item">
+            <div class="cart-card">
 
                 <div style="
                     display:flex;
@@ -261,17 +249,16 @@ with col2:
                     <div>
 
                         <div style="
+                            color:white;
                             font-size:24px;
                             font-weight:bold;
-                            color:white;
                         ">
                             {item['nama']}
                         </div>
 
                         <div style="
                             color:#dddddd;
-                            margin-top:6px;
-                            font-size:16px;
+                            margin-top:5px;
                         ">
                             {item['qty']} x Rp {item['harga']:,}
                         </div>
@@ -279,9 +266,9 @@ with col2:
                     </div>
 
                     <div style="
-                        font-size:24px;
-                        font-weight:bold;
                         color:#ffd166;
+                        font-size:22px;
+                        font-weight:bold;
                     ">
                         Rp {item['subtotal']:,}
                     </div>
@@ -307,7 +294,7 @@ with col2:
     kembali = bayar - total
 
     # ======================================================
-    # CETAK STRUK
+    # STRUK
     # ======================================================
 
     if st.button("🧾 Cetak Struk"):
@@ -323,7 +310,6 @@ with col2:
                 display:flex;
                 justify-content:space-between;
                 margin-bottom:15px;
-                color:black;
             ">
 
                 <div>
@@ -339,18 +325,18 @@ with col2:
             """
 
         receipt_html = f"""
-        <div class="receipt-box">
+        <div class="receipt">
 
             <div style="text-align:center;">
 
-                <div style="font-size:70px;">
+                <div style="font-size:60px;">
                     🥟
                 </div>
 
                 <div style="
-                    font-size:34px;
+                    font-size:32px;
                     font-weight:bold;
-                    color:#e63946;
+                    color:#d62828;
                 ">
                     TOKO BAKPAU
                 </div>
@@ -369,8 +355,9 @@ with col2:
             <div style="
                 display:flex;
                 justify-content:space-between;
-                margin-bottom:20px;
-                color:#555;
+                margin-top:15px;
+                margin-bottom:25px;
+                color:#444;
             ">
                 <span>Tanggal</span>
                 <span>{now}</span>
@@ -383,10 +370,9 @@ with col2:
             <div style="
                 display:flex;
                 justify-content:space-between;
+                margin-top:20px;
                 font-size:22px;
                 font-weight:bold;
-                margin-top:20px;
-                color:black;
             ">
                 <span>TOTAL</span>
                 <span>Rp {total:,}</span>
@@ -395,8 +381,7 @@ with col2:
             <div style="
                 display:flex;
                 justify-content:space-between;
-                margin-top:12px;
-                color:black;
+                margin-top:10px;
             ">
                 <span>PEMBAYARAN</span>
                 <span>{payment}</span>
@@ -405,8 +390,7 @@ with col2:
             <div style="
                 display:flex;
                 justify-content:space-between;
-                margin-top:12px;
-                color:black;
+                margin-top:10px;
             ">
                 <span>TUNAI</span>
                 <span>Rp {bayar:,}</span>
@@ -415,7 +399,7 @@ with col2:
             <div style="
                 display:flex;
                 justify-content:space-between;
-                margin-top:12px;
+                margin-top:10px;
                 color:green;
                 font-weight:bold;
             ">
@@ -425,7 +409,7 @@ with col2:
 
             <div style="
                 text-align:center;
-                margin-top:35px;
+                margin-top:30px;
                 color:#666;
             ">
                 Terima Kasih 🙏<br>
@@ -435,4 +419,5 @@ with col2:
         </div>
         """
 
+        # PENTING
         st.markdown(receipt_html, unsafe_allow_html=True)
