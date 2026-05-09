@@ -238,37 +238,52 @@ with col2:
 
     kembali = bayar - total
 
-    # =====================================
-        # CETAK STRUK
-        # =====================================
-        if st.button("Cetak Struk"):
+    # =====================================================
+# CETAK STRUK
+# =====================================================
 
-            if total == 0:
+if st.button("🧾 Cetak Struk"):
 
-                st.warning("Keranjang kosong")
+    if total == 0:
 
-            elif uang < total:
+        st.warning("Keranjang kosong")
 
-                st.error("Uang belum cukup")
+    elif bayar < total:
 
-            else:
+        st.error("Uang belum cukup")
 
-                tanggal = datetime.now().strftime(
-                    "%Y-%m-%d %H:%M:%S"
-                )
+    else:
 
-                st.success("Struk berhasil dicetak")
+        tanggal = datetime.now().strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
 
-                struk_html = f"""
-<div class="struk-box">
+        st.success("Struk berhasil dicetak")
+
+        struk_html = f"""
+<div style="
+background:white;
+padding:30px;
+border-radius:25px;
+color:black;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
+margin-top:20px;
+">
 
 <div style="text-align:center;">
 
+<div style="
+font-size:65px;
+">
+🥟
+</div>
+
 <h2 style="
 margin:0;
-font-size:28px;
+font-size:32px;
+color:#D62828;
 ">
-🥥 TOKO ES KELAPA LANJAI
+TOKO BAKPAU
 </h2>
 
 <div style="
@@ -276,12 +291,12 @@ color:#666;
 font-size:14px;
 margin-top:5px;
 ">
-Fresh Coconut Drink
+Fresh & Warm Everyday
 </div>
 
 </div>
 
-<hr style="margin:15px 0;">
+<hr style="margin:20px 0;">
 
 <div style="
 display:flex;
@@ -298,14 +313,18 @@ margin-bottom:15px;
 <hr style="margin:15px 0;">
 """
 
-                for item in st.session_state.keranjang:
+        # =====================================
+        # ITEM STRUK
+        # =====================================
 
-                    subtotal = (
-                        item["harga"]
-                        * item["qty"]
-                    )
+        for item in st.session_state.cart:
 
-                    struk_html += f"""
+            subtotal = (
+                item["harga"]
+                * item["qty"]
+            )
+
+            struk_html += f"""
 
 <div style="
 margin-bottom:18px;
@@ -317,6 +336,7 @@ border-bottom:1px dashed #ccc;
 font-weight:bold;
 font-size:16px;
 margin-bottom:8px;
+color:#222;
 ">
 {item['nama']}
 </div>
@@ -325,6 +345,7 @@ margin-bottom:8px;
 display:flex;
 justify-content:space-between;
 font-size:15px;
+color:#444;
 ">
 
 <div>
@@ -340,7 +361,11 @@ Rp {subtotal:,}
 </div>
 """
 
-                struk_html += f"""
+        # =====================================
+        # TOTAL
+        # =====================================
+
+        struk_html += f"""
 
 <div style="margin-top:20px;">
 
@@ -348,7 +373,7 @@ Rp {subtotal:,}
 display:flex;
 justify-content:space-between;
 margin-bottom:10px;
-font-size:16px;
+font-size:18px;
 ">
 
 <div><b>TOTAL</b></div>
@@ -363,7 +388,7 @@ margin-bottom:10px;
 ">
 
 <div>PEMBAYARAN</div>
-<div>{metode}</div>
+<div>{payment}</div>
 
 </div>
 
@@ -374,20 +399,20 @@ margin-bottom:10px;
 ">
 
 <div>TUNAI</div>
-<div>Rp {uang:,}</div>
+<div>Rp {bayar:,}</div>
 
 </div>
 
 <div style="
 display:flex;
 justify-content:space-between;
-font-size:18px;
+font-size:20px;
 font-weight:bold;
 color:green;
 ">
 
 <div>KEMBALIAN</div>
-<div>Rp {kembalian:,}</div>
+<div>Rp {kembali:,}</div>
 
 </div>
 
@@ -402,22 +427,17 @@ color:#666;
 ">
 
 Terima Kasih 🙏 <br>
-Semoga harimu segar 🥥
+Selamat menikmati bakpau 🥟
 
 </div>
 
 </div>
 """
 
-                st.markdown(
-                    struk_html,
-                    unsafe_allow_html=True
-                )
+        st.markdown(
+            struk_html,
+            unsafe_allow_html=True
+        )
 
-                st.session_state.riwayat.append({
-                    "tanggal": tanggal,
-                    "total": total,
-                    "metode": metode
-                })
-
-                st.session_state.keranjang = []
+        # Kosongkan keranjang setelah cetak
+        st.session_state.cart = []
