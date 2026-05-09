@@ -21,7 +21,7 @@ st.markdown("""
 
 .stApp{
     background-image:
-    linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+    linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)),
     url("https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=1974&auto=format&fit=crop");
 
     background-size:cover;
@@ -33,22 +33,25 @@ st.markdown("""
     padding-top:2rem;
 }
 
+/* TEXT */
 h1,h2,h3,h4,h5,h6,p,label{
     color:white !important;
 }
 
+/* CARD */
 .card{
     background:rgba(255,255,255,0.08);
-    padding:20px;
-    border-radius:20px;
-    margin-bottom:20px;
+    padding:25px;
+    border-radius:22px;
+    margin-bottom:25px;
     backdrop-filter:blur(10px);
     border:1px solid rgba(255,255,255,0.1);
 }
 
+/* METRIC */
 .metric-card{
     background:rgba(255,255,255,0.12);
-    padding:20px;
+    padding:25px;
     border-radius:20px;
     text-align:center;
     backdrop-filter:blur(10px);
@@ -67,18 +70,26 @@ h1,h2,h3,h4,h5,h6,p,label{
     margin-top:10px;
 }
 
+/* BUTTON */
 .stButton button{
     width:100%;
     background:#e63946;
     color:white;
     border:none;
-    border-radius:12px;
+    border-radius:14px;
     font-weight:bold;
     padding:12px;
+    font-size:16px;
 }
 
 .stButton button:hover{
     background:#c1121f;
+}
+
+/* TABLE */
+[data-testid="stDataFrame"]{
+    background:white;
+    border-radius:14px;
 }
 
 </style>
@@ -96,6 +107,7 @@ if "transaksi" not in st.session_state:
 # =====================================================
 
 produk_list = {
+
     "Bakpau Coklat": {
         "modal": 3000,
         "jual": 5000
@@ -115,6 +127,7 @@ produk_list = {
         "modal": 5000,
         "jual": 8000
     }
+
 }
 
 # =====================================================
@@ -146,7 +159,10 @@ with col1:
 
     st.markdown(f"""
     <div class="metric-card">
-        <div class="metric-title">Total Omzet</div>
+        <div class="metric-title">
+            Total Omzet
+        </div>
+
         <div class="metric-value">
             Rp {total_omzet:,}
         </div>
@@ -157,7 +173,10 @@ with col2:
 
     st.markdown(f"""
     <div class="metric-card">
-        <div class="metric-title">Total Keuntungan</div>
+        <div class="metric-title">
+            Total Keuntungan
+        </div>
+
         <div class="metric-value">
             Rp {total_keuntungan:,}
         </div>
@@ -168,7 +187,10 @@ with col3:
 
     st.markdown(f"""
     <div class="metric-card">
-        <div class="metric-title">Total Produk Keluar</div>
+        <div class="metric-title">
+            Total Produk Keluar
+        </div>
+
         <div class="metric-value">
             {total_produk} pcs
         </div>
@@ -187,55 +209,94 @@ st.markdown("""
 
 st.markdown("## 📦 Input Pengambilan Produk")
 
-col1, col2 = st.columns(2)
+nama = st.text_input(
+    "Nama Pengambil / Reseller"
+)
 
-with col1:
+status = st.selectbox(
+    "Status Pembayaran",
+    ["Belum Bayar", "Lunas"]
+)
 
-    nama = st.text_input(
-        "Nama Pengambil / Reseller"
-    )
+st.markdown("## 🥟 Pilih Produk")
 
-    produk = st.selectbox(
-        "Pilih Produk",
-        list(produk_list.keys())
-    )
+selected_items = []
 
-with col2:
-
-    qty = st.number_input(
-        "Jumlah Produk",
-        min_value=1,
-        value=1
-    )
-
-    status = st.selectbox(
-        "Status Pembayaran",
-        ["Belum Bayar", "Lunas"]
-    )
+total_modal = 0
+total_jual = 0
+total_keuntungan_input = 0
+total_qty_input = 0
 
 # =====================================================
-# HITUNG
+# PRODUK LOOP
 # =====================================================
 
-modal = produk_list[produk]["modal"]
-jual = produk_list[produk]["jual"]
+for produk_nama, data in produk_list.items():
 
-total_modal = modal * qty
-total_jual = jual * qty
-keuntungan = total_jual - total_modal
+    st.markdown("---")
+
+    col1, col2 = st.columns([3,1])
+
+    with col1:
+
+        pilih = st.checkbox(
+            f"{produk_nama}",
+            key=f"check_{produk_nama}"
+        )
+
+    with col2:
+
+        qty = st.number_input(
+            f"Qty {produk_nama}",
+            min_value=0,
+            value=0,
+            key=f"qty_{produk_nama}"
+        )
+
+    # =================================================
+    # JIKA DIPILIH
+    # =================================================
+
+    if pilih and qty > 0:
+
+        modal = data["modal"]
+        jual = data["jual"]
+
+        subtotal_modal = modal * qty
+        subtotal_jual = jual * qty
+        keuntungan = subtotal_jual - subtotal_modal
+
+        total_modal += subtotal_modal
+        total_jual += subtotal_jual
+        total_keuntungan_input += keuntungan
+        total_qty_input += qty
+
+        selected_items.append({
+
+            "produk": produk_nama,
+            "qty": qty,
+            "modal": modal,
+            "jual": jual,
+            "subtotal_modal": subtotal_modal,
+            "subtotal_jual": subtotal_jual,
+            "keuntungan": keuntungan
+        })
 
 # =====================================================
-# PREVIEW
+# RINGKASAN
 # =====================================================
+
+st.markdown("## 💰 Ringkasan Distribusi")
 
 st.markdown(f"""
-### 💰 Rincian
+### 📦 Total Produk
+# {total_qty_input} pcs
 
-- Harga Modal : Rp {modal:,}
-- Harga Jual : Rp {jual:,}
-- Total Modal : Rp {total_modal:,}
-- Total Jual : Rp {total_jual:,}
-- Keuntungan : Rp {keuntungan:,}
+### 💵 Total Omzet
+# Rp {total_jual:,}
+
+### 🟢 Total Keuntungan
+# Rp {total_keuntungan_input:,}
 """)
 
 # =====================================================
@@ -246,7 +307,11 @@ if st.button("💾 Simpan Distribusi"):
 
     if nama == "":
 
-        st.warning("Masukkan nama pengambil")
+        st.warning("Masukkan nama reseller")
+
+    elif len(selected_items) == 0:
+
+        st.warning("Pilih minimal 1 produk")
 
     else:
 
@@ -259,24 +324,20 @@ if st.button("💾 Simpan Distribusi"):
 
             "nama": nama,
 
-            "produk": produk,
+            "items": selected_items,
 
-            "qty": qty,
-
-            "modal": modal,
-
-            "jual": jual,
+            "qty": total_qty_input,
 
             "total_modal": total_modal,
 
             "total_jual": total_jual,
 
-            "keuntungan": keuntungan,
+            "keuntungan": total_keuntungan_input,
 
             "status": status
         })
 
-        st.success("Data distribusi berhasil disimpan")
+        st.success("Distribusi berhasil disimpan")
 
 st.markdown("""
 </div>
@@ -298,9 +359,31 @@ if len(st.session_state.transaksi) == 0:
 
 else:
 
-    df = pd.DataFrame(
-        st.session_state.transaksi
-    )
+    data_tampil = []
+
+    for trx in st.session_state.transaksi:
+
+        produk_text = ""
+
+        for item in trx["items"]:
+
+            produk_text += (
+                f"{item['produk']} "
+                f"({item['qty']} pcs), "
+            )
+
+        data_tampil.append({
+
+            "Tanggal": trx["tanggal"],
+            "Nama": trx["nama"],
+            "Produk": produk_text,
+            "Qty": trx["qty"],
+            "Omzet": trx["total_jual"],
+            "Keuntungan": trx["keuntungan"],
+            "Status": trx["status"]
+        })
+
+    df = pd.DataFrame(data_tampil)
 
     st.dataframe(
         df,
@@ -308,7 +391,7 @@ else:
     )
 
     # =================================================
-    # DOWNLOAD EXCEL
+    # DOWNLOAD CSV
     # =================================================
 
     csv = df.to_csv(index=False).encode("utf-8")
@@ -325,7 +408,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =====================================================
-# RESUMEN PENDAPATAN
+# RINGKASAN
 # =====================================================
 
 st.markdown("""
@@ -335,13 +418,13 @@ st.markdown("""
 st.markdown("## 📈 Ringkasan Pendapatan")
 
 st.markdown(f"""
-### 🧾 Total Omzet
+### 💵 Total Omzet
 # Rp {total_omzet:,}
 
-### 💵 Total Keuntungan
+### 🟢 Total Keuntungan
 # Rp {total_keuntungan:,}
 
-### 📦 Total Produk Terjual
+### 📦 Total Produk Keluar
 # {total_produk} pcs
 """)
 
