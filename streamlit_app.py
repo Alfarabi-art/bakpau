@@ -2,343 +2,337 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-# ======================================================
+# =====================================================
 # CONFIG
-# ======================================================
+# =====================================================
 
 st.set_page_config(
     page_title="Distributor Bakpau",
-    page_icon="🥟",
     layout="wide"
 )
 
-# ======================================================
-# CSS
-# ======================================================
+# =====================================================
+# BACKGROUND
+# =====================================================
 
-st.markdown("""
+page_bg = """
 <style>
 
-.stApp{
-    background-image:
-    linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)),
-    url("https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=1974&auto=format&fit=crop");
-
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+[data-testid="stAppViewContainer"]{
+background-image:url("https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=1200");
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+background-attachment:fixed;
 }
 
 [data-testid="stHeader"]{
-    background: transparent;
+background:rgba(0,0,0,0);
 }
 
 .block-container{
-    padding-top: 2rem;
+padding-top:20px;
 }
 
-h1,h2,h3,h4,h5,h6,p,label{
-    color: white !important;
+.kotak{
+background:rgba(0,0,0,0.55);
+padding:25px;
+border-radius:25px;
+backdrop-filter: blur(10px);
+margin-bottom:20px;
 }
 
-.stTextInput label,
-.stSelectbox label,
-.stNumberInput label{
-    color:white !important;
-    font-weight:bold;
+.title{
+color:white;
+font-size:60px;
+font-weight:bold;
 }
 
-.stButton button{
-    width:100%;
-    background:#e63946;
-    color:white;
-    border:none;
-    border-radius:12px;
-    padding:12px;
-    font-weight:bold;
+.subtitle{
+color:#dddddd;
+font-size:24px;
+margin-top:-10px;
 }
 
-.stButton button:hover{
-    background:#c1121f;
+.metric-title{
+color:#dddddd;
+font-size:20px;
+margin-bottom:10px;
+}
+
+.metric-value{
+color:white;
+font-size:40px;
+font-weight:bold;
+}
+
+.card-produk{
+background:rgba(255,255,255,0.08);
+padding:20px;
+border-radius:20px;
+margin-bottom:15px;
+}
+
+.nama-produk{
+color:white;
+font-size:24px;
+font-weight:bold;
+}
+
+.harga{
+color:#ffd166;
+font-size:22px;
+font-weight:bold;
 }
 
 </style>
-""", unsafe_allow_html=True)
+"""
 
-# ======================================================
-# SESSION STATE
-# ======================================================
+st.markdown(page_bg, unsafe_allow_html=True)
 
-if "data_distributor" not in st.session_state:
-    st.session_state.data_distributor = []
-
-# ======================================================
+# =====================================================
 # DATA PRODUK
-# ======================================================
+# =====================================================
 
 produk_data = {
-
     "Bakpau Coklat": {
         "modal": 3000,
         "jual": 5000
     },
-
     "Bakpau Ayam": {
         "modal": 4000,
         "jual": 7000
     },
-
-    "Bakpau Keju": {
-        "modal": 5000,
-        "jual": 8000
-    },
-
     "Bakpau Kacang Hijau": {
         "modal": 3500,
         "jual": 6000
+    },
+    "Bakpau Keju": {
+        "modal": 5000,
+        "jual": 8000
     }
-
 }
 
-# ======================================================
+# =====================================================
+# SESSION STATE
+# =====================================================
+
+if "riwayat" not in st.session_state:
+    st.session_state.riwayat = []
+
+# =====================================================
 # HEADER
-# ======================================================
+# =====================================================
 
 st.markdown("""
-<div style="
-display:flex;
-align-items:center;
-gap:20px;
-margin-bottom:40px;
-">
+<div class="kotak">
 
-<div style="font-size:70px;">
-🥟
+<div class="title">
+🥟 Distributor Bakpau
 </div>
 
-<div>
-
-<div style="
-font-size:55px;
-font-weight:bold;
-color:white;
-">
-Distributor Bakpau
-</div>
-
-<div style="
-font-size:22px;
-color:#dddddd;
-">
+<div class="subtitle">
 Sistem Distribusi & Pendapatan UMKM
-</div>
-
 </div>
 
 </div>
 """, unsafe_allow_html=True)
 
-# ======================================================
-# HITUNG TOTAL
-# ======================================================
+# =====================================================
+# INPUT DATA
+# =====================================================
 
-total_omzet = 0
-total_keuntungan = 0
-total_produk = 0
+st.markdown("""
+<div class="kotak">
+<h1 style='color:white;'>📦 Input Pengambilan Produk</h1>
+</div>
+""", unsafe_allow_html=True)
 
-for item in st.session_state.data_distributor:
+nama = st.text_input("Nama Pengambil / Reseller")
 
-    total_omzet += item["Total Jual"]
-    total_keuntungan += item["Keuntungan"]
-    total_produk += item["Qty"]
+status = st.selectbox(
+    "Status Pembayaran",
+    ["Belum Bayar", "Sudah Bayar"]
+)
 
-# ======================================================
-# DASHBOARD FIX
-# ======================================================
+# =====================================================
+# MULTI PRODUK
+# =====================================================
+
+st.markdown("## 🛒 Pilih Produk")
+
+produk_terpilih = []
+
+for nama_produk, data in produk_data.items():
+
+    st.markdown(f"""
+    <div class="card-produk">
+    <div class="nama-produk">{nama_produk}</div>
+    <div class="harga">
+    Rp {data['jual']:,}
+    </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    qty = st.number_input(
+        f"Qty {nama_produk}",
+        min_value=0,
+        step=1,
+        key=nama_produk
+    )
+
+    if qty > 0:
+
+        total_modal = qty * data["modal"]
+        total_jual = qty * data["jual"]
+        keuntungan = total_jual - total_modal
+
+        produk_terpilih.append({
+
+            "Produk": nama_produk,
+            "Qty": qty,
+            "Harga Modal": data["modal"],
+            "Harga Jual": data["jual"],
+            "Total Modal": total_modal,
+            "Total Jual": total_jual,
+            "Keuntungan": keuntungan
+
+        })
+
+# =====================================================
+# TOTAL
+# =====================================================
+
+grand_qty = sum(x["Qty"] for x in produk_terpilih)
+grand_modal = sum(x["Total Modal"] for x in produk_terpilih)
+grand_jual = sum(x["Total Jual"] for x in produk_terpilih)
+grand_keuntungan = sum(x["Keuntungan"] for x in produk_terpilih)
+
+# =====================================================
+# METRIC
+# =====================================================
 
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.metric(
-        label="💰 Total Omzet",
-        value=f"Rp {total_omzet:,}"
-    )
+
+    st.markdown(f"""
+    <div class="kotak">
+    <div class="metric-title">
+    Total Omzet
+    </div>
+
+    <div class="metric-value">
+    Rp {grand_jual:,}
+    </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 with col2:
-    st.metric(
-        label="📈 Total Keuntungan",
-        value=f"Rp {total_keuntungan:,}"
-    )
+
+    st.markdown(f"""
+    <div class="kotak">
+    <div class="metric-title">
+    Total Keuntungan
+    </div>
+
+    <div class="metric-value" style="color:#00ff99;">
+    Rp {grand_keuntungan:,}
+    </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 with col3:
-    st.metric(
-        label="📦 Total Produk Keluar",
-        value=f"{total_produk} pcs"
-    )
 
-# ======================================================
-# SPACING
-# ======================================================
+    st.markdown(f"""
+    <div class="kotak">
+    <div class="metric-title">
+    Total Produk Keluar
+    </div>
 
-st.write("")
-st.write("")
+    <div class="metric-value" style="color:#ffd166;">
+    {grand_qty} pcs
+    </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-# ======================================================
-# FORM INPUT
-# ======================================================
-
-st.markdown("""
-# 📦 Input Pengambilan Produk
-""")
-
-nama = st.text_input(
-    "Nama Pengambil / Reseller"
-)
-
-status = st.selectbox(
-    "Status Pembayaran",
-    ["Belum Bayar", "Lunas"]
-)
-
-jumlah_produk = st.number_input(
-    "Jumlah Jenis Produk",
-    min_value=1,
-    max_value=10,
-    value=1
-)
-
-produk_terpilih = []
-
-grand_total_jual = 0
-grand_keuntungan = 0
-grand_qty = 0
-
-# ======================================================
-# MULTI PRODUK
-# ======================================================
-
-for i in range(jumlah_produk):
-
-    st.markdown(f"### Produk {i+1}")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-
-        produk = st.selectbox(
-            f"Pilih Produk {i+1}",
-            list(produk_data.keys()),
-            key=f"produk_{i}"
-        )
-
-    with col2:
-
-        qty = st.number_input(
-            f"Qty Produk {i+1}",
-            min_value=1,
-            value=1,
-            key=f"qty_{i}"
-        )
-
-    modal = produk_data[produk]["modal"]
-    jual = produk_data[produk]["jual"]
-
-    total_modal = modal * qty
-    total_jual = jual * qty
-    keuntungan = total_jual - total_modal
-
-    grand_total_jual += total_jual
-    grand_keuntungan += keuntungan
-    grand_qty += qty
-
-    produk_terpilih.append({
-
-        "Produk": produk,
-        "Qty": qty,
-        "Harga Modal": modal,
-        "Harga Jual": jual,
-        "Total Modal": total_modal,
-        "Total Jual": total_jual,
-        "Keuntungan": keuntungan
-
-    })
-
-# ======================================================
-# RINGKASAN
-# ======================================================
-
-st.markdown("---")
-
-st.success(f"💰 Total Omzet : Rp {grand_total_jual:,}")
-
-st.info(f"📈 Total Keuntungan : Rp {grand_keuntungan:,}")
-
-st.warning(f"📦 Total Produk : {grand_qty} pcs")
-
-# ======================================================
-# BUTTON SIMPAN
-# ======================================================
+# =====================================================
+# SIMPAN DATA
+# =====================================================
 
 if st.button("💾 Simpan Distribusi"):
 
     if nama == "":
-
         st.warning("Masukkan nama reseller")
+
+    elif len(produk_terpilih) == 0:
+        st.warning("Pilih minimal 1 produk")
 
     else:
 
+        daftar_produk = []
+
         for item in produk_terpilih:
 
-            st.session_state.data_distributor.append({
+            daftar_produk.append(
+                f"{item['Produk']} ({item['Qty']} pcs)"
+            )
 
-                "Tanggal":
-                datetime.now().strftime(
-                    "%d-%m-%Y %H:%M:%S"
-                ),
+        gabungan_produk = ", ".join(daftar_produk)
 
-                "Nama": nama,
+        st.session_state.riwayat.append({
 
-                "Produk": item["Produk"],
+            "Tanggal":
+            datetime.now().strftime(
+                "%d-%m-%Y %H:%M:%S"
+            ),
 
-                "Qty": item["Qty"],
+            "Nama":
+            nama,
 
-                "Harga Modal": item["Harga Modal"],
+            "Produk":
+            gabungan_produk,
 
-                "Harga Jual": item["Harga Jual"],
+            "Total Qty":
+            grand_qty,
 
-                "Total Modal": item["Total Modal"],
+            "Total Modal":
+            grand_modal,
 
-                "Total Jual": item["Total Jual"],
+            "Total Omzet":
+            grand_jual,
 
-                "Keuntungan": item["Keuntungan"],
+            "Keuntungan":
+            grand_keuntungan,
 
-                "Status": status
+            "Status":
+            status
 
-            })
+        })
 
         st.success("Data berhasil disimpan")
 
-# ======================================================
-# SPACING
-# ======================================================
-
-st.write("")
-st.write("")
-
-# ======================================================
+# =====================================================
 # RIWAYAT
-# ======================================================
+# =====================================================
 
-st.markdown("# 📋 Riwayat Distribusi")
+st.write("")
+st.write("")
 
-if len(st.session_state.data_distributor) == 0:
+st.markdown("""
+<div class="kotak">
+<h1 style='color:white;'>📋 Riwayat Distribusi</h1>
+</div>
+""", unsafe_allow_html=True)
+
+if len(st.session_state.riwayat) == 0:
 
     st.info("Belum ada data")
 
 else:
 
     df = pd.DataFrame(
-        st.session_state.data_distributor
+        st.session_state.riwayat
     )
 
     st.dataframe(
