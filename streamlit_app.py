@@ -49,6 +49,7 @@ h1,h2,h3,h4,h5,h6,p,label{
     padding:18px;
     border-radius:18px;
     margin-bottom:15px;
+    backdrop-filter:blur(8px);
 }
 
 .stButton button{
@@ -59,6 +60,7 @@ h1,h2,h3,h4,h5,h6,p,label{
     color:white;
     font-weight:bold;
     padding:12px;
+    font-size:16px;
 }
 
 .stButton button:hover{
@@ -239,28 +241,28 @@ with col2:
     kembali = bayar - total
 
     # =====================================================
-# CETAK STRUK
-# =====================================================
+    # CETAK STRUK
+    # =====================================================
 
-if st.button("🧾 Cetak Struk"):
+    if st.button("🧾 Cetak Struk"):
 
-    if total == 0:
+        if total == 0:
 
-        st.warning("Keranjang kosong")
+            st.warning("Keranjang kosong")
 
-    elif bayar < total:
+        elif bayar < total:
 
-        st.error("Uang belum cukup")
+            st.error("Uang belum cukup")
 
-    else:
+        else:
 
-        tanggal = datetime.now().strftime(
-            "%Y-%m-%d %H:%M:%S"
-        )
+            tanggal = datetime.now().strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
 
-        st.success("Struk berhasil dicetak")
+            st.success("Struk berhasil dicetak")
 
-        struk_html = f"""
+            struk_html = f"""
 <div style="
 background:white;
 padding:30px;
@@ -273,14 +275,14 @@ margin-top:20px;
 <div style="text-align:center;">
 
 <div style="
-font-size:65px;
+font-size:70px;
 ">
 🥟
 </div>
 
 <h2 style="
 margin:0;
-font-size:32px;
+font-size:34px;
 color:#D62828;
 ">
 TOKO BAKPAU
@@ -303,6 +305,7 @@ display:flex;
 justify-content:space-between;
 font-size:14px;
 margin-bottom:15px;
+color:#444;
 ">
 
 <span>Tanggal</span>
@@ -313,18 +316,18 @@ margin-bottom:15px;
 <hr style="margin:15px 0;">
 """
 
-        # =====================================
-        # ITEM STRUK
-        # =====================================
+            # =====================================================
+            # ITEM STRUK
+            # =====================================================
 
-        for item in st.session_state.cart:
+            for item in st.session_state.cart:
 
-            subtotal = (
-                item["harga"]
-                * item["qty"]
-            )
+                subtotal = (
+                    item["harga"]
+                    * item["qty"]
+                )
 
-            struk_html += f"""
+                struk_html += f"""
 
 <div style="
 margin-bottom:18px;
@@ -361,11 +364,11 @@ Rp {subtotal:,}
 </div>
 """
 
-        # =====================================
-        # TOTAL
-        # =====================================
+            # =====================================================
+            # TOTAL
+            # =====================================================
 
-        struk_html += f"""
+            struk_html += f"""
 
 <div style="margin-top:20px;">
 
@@ -385,6 +388,7 @@ font-size:18px;
 display:flex;
 justify-content:space-between;
 margin-bottom:10px;
+font-size:15px;
 ">
 
 <div>PEMBAYARAN</div>
@@ -396,6 +400,7 @@ margin-bottom:10px;
 display:flex;
 justify-content:space-between;
 margin-bottom:10px;
+font-size:15px;
 ">
 
 <div>TUNAI</div>
@@ -434,10 +439,10 @@ Selamat menikmati bakpau 🥟
 </div>
 """
 
-        st.markdown(
-            struk_html,
-            unsafe_allow_html=True
-        )
+            st.markdown(
+                struk_html,
+                unsafe_allow_html=True
+            )
 
-        # Kosongkan keranjang setelah cetak
-        st.session_state.cart = []
+            # kosongkan keranjang
+            st.session_state.cart = []
