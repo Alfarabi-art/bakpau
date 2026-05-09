@@ -131,8 +131,10 @@ if "invoice_terakhir" not in st.session_state:
 if "stok_produk" not in st.session_state:
 
     st.session_state.stok_produk = {
+
         nama: data["stok"]
         for nama, data in produk_data.items()
+
     }
 
 # =====================================================
@@ -201,42 +203,6 @@ st.dataframe(
     stok_df,
     use_container_width=True
 )
-
-# =====================================================
-# TAMBAH STOK
-# =====================================================
-
-st.write("")
-st.markdown("## ➕ Tambah Stok")
-
-col1, col2 = st.columns(2)
-
-with col1:
-
-    pilih_produk = st.selectbox(
-        "Pilih Produk",
-        list(produk_data.keys())
-    )
-
-with col2:
-
-    tambah_stok = st.number_input(
-        "Jumlah Tambah Stok",
-        min_value=1,
-        step=1
-    )
-
-if st.button("➕ Tambah Stok"):
-
-    st.session_state.stok_produk[
-        pilih_produk
-    ] += tambah_stok
-
-    st.success(
-        f"Stok {pilih_produk} berhasil ditambah"
-    )
-
-    st.rerun()
 
 # =====================================================
 # FORM INPUT
