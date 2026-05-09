@@ -1,20 +1,24 @@
 import streamlit as st
 from datetime import datetime
 
-# =========================
+# ==========================================
 # CONFIG
-# =========================
+# ==========================================
 st.set_page_config(
     page_title="Kasir Bakpau",
     page_icon="🥟",
     layout="wide"
 )
 
-# =========================
-# BACKGROUND
-# =========================
-page_bg = """
+# ==========================================
+# BACKGROUND & STYLE
+# ==========================================
+st.markdown("""
 <style>
+
+html, body, [class*="css"]{
+    font-family: 'Poppins', sans-serif;
+}
 
 [data-testid="stAppViewContainer"]{
     background:
@@ -41,20 +45,53 @@ h1,h2,h3,h4,h5,h6,p,label{
     color:white !important;
 }
 
+.stButton>button{
+    background:#D62828;
+    color:white;
+    border:none;
+    border-radius:12px;
+    padding:12px;
+    font-weight:bold;
+}
+
+.stButton>button:hover{
+    background:#B71C1C;
+    color:white;
+}
+
+[data-testid="stNumberInput"] input{
+    border-radius:12px;
+}
+
+[data-testid="stSelectbox"]{
+    border-radius:12px;
+}
+
+@media (max-width: 768px){
+
+    h1{
+        font-size:38px !important;
+    }
+
+    .block-container{
+        padding-top:1rem;
+        padding-left:1rem;
+        padding-right:1rem;
+    }
+}
+
 </style>
-"""
+""", unsafe_allow_html=True)
 
-st.markdown(page_bg, unsafe_allow_html=True)
-
-# =========================
+# ==========================================
 # DATA MENU
-# =========================
+# ==========================================
 menu = [
     {
         "id": 1,
         "nama": "Bakpau Coklat",
         "harga": 5000,
-        "gambar": "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=1200&auto=format&fit=crop"
+        "gambar": "https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1200&auto=format&fit=crop"
     },
     {
         "id": 2,
@@ -66,7 +103,7 @@ menu = [
         "id": 3,
         "nama": "Bakpau Kacang Hijau",
         "harga": 5000,
-        "gambar": "https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1200&auto=format&fit=crop"
+        "gambar": "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=1200&auto=format&fit=crop"
     },
     {
         "id": 4,
@@ -76,29 +113,29 @@ menu = [
     }
 ]
 
-# =========================
+# ==========================================
 # SESSION STATE
-# =========================
+# ==========================================
 if "keranjang" not in st.session_state:
     st.session_state.keranjang = []
 
-# =========================
+# ==========================================
 # HEADER
-# =========================
+# ==========================================
 st.markdown("""
-<h1 style='font-size:60px;'>
+<h1 style='font-size:65px; font-weight:bold;'>
 🥟 Kasir Bakpau
 </h1>
 """, unsafe_allow_html=True)
 
-# =========================
+# ==========================================
 # LAYOUT
-# =========================
+# ==========================================
 col1, col2 = st.columns([1.2, 1])
 
-# =========================
+# ==========================================
 # MENU
-# =========================
+# ==========================================
 with col1:
 
     st.markdown("## Menu Bakpau")
@@ -152,11 +189,11 @@ with col1:
                     "subtotal": subtotal
                 })
 
-                st.success(f"{item['nama']} ditambahkan")
+                st.success(f"{item['nama']} berhasil ditambahkan")
 
-# =========================
+# ==========================================
 # KERANJANG
-# =========================
+# ==========================================
 with col2:
 
     st.markdown("## Keranjang")
@@ -177,16 +214,17 @@ with col2:
                 f"""
                 <div style="
                     background:rgba(255,255,255,0.12);
-                    padding:15px;
-                    border-radius:15px;
-                    margin-bottom:10px;
-                    backdrop-filter:blur(6px);
+                    padding:18px;
+                    border-radius:18px;
+                    margin-bottom:12px;
+                    backdrop-filter:blur(8px);
                 ">
+
                     <div style="
                         display:flex;
                         justify-content:space-between;
                         color:white;
-                        font-size:18px;
+                        font-size:20px;
                         font-weight:bold;
                     ">
                         <span>{item['nama']}</span>
@@ -195,10 +233,11 @@ with col2:
 
                     <div style="
                         color:#ddd;
-                        margin-top:5px;
+                        margin-top:6px;
                     ">
                         {item['qty']} x Rp {item['harga']:,}
                     </div>
+
                 </div>
                 """,
                 unsafe_allow_html=True
@@ -236,9 +275,9 @@ with col2:
 
             st.error("Uang kurang")
 
-    # =========================
+    # ==========================================
     # CETAK STRUK
-    # =========================
+    # ==========================================
     if st.button("Cetak Struk", use_container_width=True):
 
         waktu = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -250,54 +289,55 @@ with col2:
             detail += f"""
             <div style="
                 margin-bottom:15px;
+                padding-bottom:12px;
+                border-bottom:1px dashed #ddd;
             ">
-                <div style="
-                    font-weight:bold;
-                    font-size:17px;
-                    color:#222;
-                ">
-                    {item['nama']}
-                </div>
 
                 <div style="
                     display:flex;
                     justify-content:space-between;
-                    margin-top:5px;
-                    color:#555;
+                    font-size:18px;
+                    font-weight:bold;
+                    color:#222;
                 ">
-                    <span>
-                        {item['qty']} x Rp {item['harga']:,}
-                    </span>
-
-                    <span>
-                        Rp {item['subtotal']:,}
-                    </span>
+                    <span>{item['nama']}</span>
+                    <span>Rp {item['subtotal']:,}</span>
                 </div>
+
+                <div style="
+                    color:#777;
+                    margin-top:6px;
+                    font-size:15px;
+                ">
+                    {item['qty']} x Rp {item['harga']:,}
+                </div>
+
             </div>
             """
 
         receipt_html = f"""
         <div style="
             background:white;
-            padding:30px;
-            border-radius:25px;
-            color:black;
-            box-shadow:0 10px 30px rgba(0,0,0,0.3);
+            padding:35px;
+            border-radius:28px;
             margin-top:20px;
+            color:black;
+            box-shadow:0 12px 35px rgba(0,0,0,0.35);
         ">
 
             <div style="
                 text-align:center;
                 margin-bottom:25px;
             ">
+
                 <div style="
-                    font-size:60px;
+                    font-size:65px;
                 ">
                     🥟
                 </div>
 
                 <div style="
-                    font-size:32px;
+                    font-size:34px;
                     font-weight:bold;
                     color:#D62828;
                 ">
@@ -305,11 +345,13 @@ with col2:
                 </div>
 
                 <div style="
-                    color:gray;
+                    color:#777;
                     margin-top:5px;
+                    font-size:15px;
                 ">
                     Fresh & Warm Every Day
                 </div>
+
             </div>
 
             <hr>
@@ -319,7 +361,8 @@ with col2:
                 justify-content:space-between;
                 margin-top:15px;
                 margin-bottom:25px;
-                color:#444;
+                color:#555;
+                font-size:15px;
             ">
                 <span>Tanggal</span>
                 <span>{waktu}</span>
@@ -327,26 +370,28 @@ with col2:
 
             {detail}
 
-            <hr>
-
             <div style="
-                margin-top:20px;
-                font-size:18px;
+                margin-top:25px;
+                padding-top:20px;
+                border-top:2px dashed #ddd;
             ">
 
                 <div style="
                     display:flex;
                     justify-content:space-between;
-                    margin-bottom:10px;
+                    margin-bottom:12px;
+                    font-size:22px;
+                    font-weight:bold;
                 ">
-                    <b>TOTAL</b>
-                    <b>Rp {total:,}</b>
+                    <span>TOTAL</span>
+                    <span>Rp {total:,}</span>
                 </div>
 
                 <div style="
                     display:flex;
                     justify-content:space-between;
                     margin-bottom:10px;
+                    color:#555;
                 ">
                     <span>PEMBAYARAN</span>
                     <span>{metode}</span>
@@ -356,6 +401,7 @@ with col2:
                     display:flex;
                     justify-content:space-between;
                     margin-bottom:10px;
+                    color:#555;
                 ">
                     <span>TUNAI</span>
                     <span>Rp {uang:,}</span>
@@ -367,6 +413,7 @@ with col2:
                     margin-bottom:10px;
                     color:green;
                     font-weight:bold;
+                    font-size:19px;
                 ">
                     <span>KEMBALIAN</span>
                     <span>Rp {kembalian:,}</span>
@@ -376,8 +423,9 @@ with col2:
 
             <div style="
                 text-align:center;
-                margin-top:30px;
+                margin-top:35px;
                 color:#666;
+                font-size:15px;
             ">
                 Terima Kasih 🙏
                 <br>
@@ -389,6 +437,7 @@ with col2:
 
         st.success("Struk berhasil dicetak")
 
+        # PENTING
         st.markdown(
             receipt_html,
             unsafe_allow_html=True
