@@ -33,12 +33,10 @@ st.markdown("""
     padding-top:2rem;
 }
 
-/* TEXT */
 h1,h2,h3,h4,h5,h6,p,label{
     color:white !important;
 }
 
-/* CARD */
 .card{
     background:rgba(255,255,255,0.08);
     padding:25px;
@@ -48,29 +46,6 @@ h1,h2,h3,h4,h5,h6,p,label{
     border:1px solid rgba(255,255,255,0.1);
 }
 
-/* METRIC */
-.metric-card{
-    background:rgba(255,255,255,0.12);
-    padding:25px;
-    border-radius:20px;
-    text-align:center;
-    backdrop-filter:blur(10px);
-    border:1px solid rgba(255,255,255,0.1);
-}
-
-.metric-title{
-    color:#dddddd;
-    font-size:18px;
-}
-
-.metric-value{
-    color:white;
-    font-size:34px;
-    font-weight:bold;
-    margin-top:10px;
-}
-
-/* BUTTON */
 .stButton button{
     width:100%;
     background:#e63946;
@@ -86,7 +61,6 @@ h1,h2,h3,h4,h5,h6,p,label{
     background:#c1121f;
 }
 
-/* TABLE */
 [data-testid="stDataFrame"]{
     background:white;
     border-radius:14px;
@@ -140,7 +114,7 @@ st.markdown("""
 """)
 
 # =====================================================
-# HITUNG TOTAL
+# TOTAL
 # =====================================================
 
 total_omzet = 0
@@ -159,48 +133,105 @@ for trx in st.session_state.transaksi:
 
 col1, col2, col3 = st.columns(3)
 
+# =====================================================
+# CARD 1
+# =====================================================
+
 with col1:
 
     st.markdown(f"""
-    <div class="metric-card">
+    <div style="
+        background:rgba(255,255,255,0.12);
+        padding:25px;
+        border-radius:20px;
+        text-align:center;
+        backdrop-filter:blur(10px);
+        border:1px solid rgba(255,255,255,0.1);
+    ">
 
-        <div class="metric-title">
+        <div style="
+            color:#dddddd;
+            font-size:18px;
+        ">
             Total Omzet
         </div>
 
-        <div class="metric-value">
+        <div style="
+            color:white;
+            font-size:34px;
+            font-weight:bold;
+            margin-top:10px;
+        ">
             Rp {total_omzet:,}
         </div>
 
     </div>
     """, unsafe_allow_html=True)
 
+# =====================================================
+# CARD 2
+# =====================================================
+
 with col2:
 
     st.markdown(f"""
-    <div class="metric-card">
+    <div style="
+        background:rgba(255,255,255,0.12);
+        padding:25px;
+        border-radius:20px;
+        text-align:center;
+        backdrop-filter:blur(10px);
+        border:1px solid rgba(255,255,255,0.1);
+    ">
 
-        <div class="metric-title">
+        <div style="
+            color:#dddddd;
+            font-size:18px;
+        ">
             Total Keuntungan
         </div>
 
-        <div class="metric-value">
+        <div style="
+            color:white;
+            font-size:34px;
+            font-weight:bold;
+            margin-top:10px;
+        ">
             Rp {total_keuntungan:,}
         </div>
 
     </div>
     """, unsafe_allow_html=True)
 
+# =====================================================
+# CARD 3
+# =====================================================
+
 with col3:
 
     st.markdown(f"""
-    <div class="metric-card">
+    <div style="
+        background:rgba(255,255,255,0.12);
+        padding:25px;
+        border-radius:20px;
+        text-align:center;
+        backdrop-filter:blur(10px);
+        border:1px solid rgba(255,255,255,0.1);
+    ">
 
-        <div class="metric-title">
+        <div style="
+            color:#dddddd;
+            font-size:18px;
+        ">
             Total Produk Keluar
         </div>
 
-        <div class="metric-value">
+        <div style="
+            color:white;
+            font-size:34px;
+            font-weight:bold;
+            margin-top:10px;
+        ">
             {total_produk} pcs
         </div>
 
@@ -311,7 +342,7 @@ st.markdown(f"""
 """)
 
 # =====================================================
-# SIMPAN
+# BUTTON SIMPAN
 # =====================================================
 
 if st.button("💾 Simpan Distribusi"):
