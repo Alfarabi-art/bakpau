@@ -165,10 +165,10 @@ with col1:
             ):
 
                 st.session_state.cart.append({
-                    "nama":item["nama"],
-                    "harga":item["harga"],
-                    "qty":qty,
-                    "subtotal":item["harga"] * qty
+                    "nama": item["nama"],
+                    "harga": item["harga"],
+                    "qty": qty,
+                    "subtotal": item["harga"] * qty
                 })
 
                 st.success("Berhasil ditambahkan")
@@ -208,9 +208,9 @@ with col2:
             with c1:
 
                 st.markdown(f"""
-                ### {item['nama']}
-                {item['qty']} x Rp {item['harga']:,}
-                """)
+### {item['nama']}
+{item['qty']} x Rp {item['harga']:,}
+""")
 
             with c2:
 
@@ -261,9 +261,7 @@ with col2:
                 margin-bottom:25px;
             ">
 
-                <div style="
-                    font-size:70px;
-                ">
+                <div style="font-size:70px;">
                     🥟
                 </div>
 
@@ -400,6 +398,10 @@ with col2:
 
         </div>
         """
+
+        # =====================================================
+        # TAMPILKAN STRUK
+        # =====================================================
 
         st.markdown(
             receipt_html,
