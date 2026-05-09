@@ -96,7 +96,7 @@ h1,h2,h3,h4,h5,h6,p,label{
 """, unsafe_allow_html=True)
 
 # =====================================================
-# SESSION STATE
+# SESSION
 # =====================================================
 
 if "transaksi" not in st.session_state:
@@ -140,7 +140,7 @@ st.markdown("""
 """)
 
 # =====================================================
-# DASHBOARD
+# HITUNG TOTAL
 # =====================================================
 
 total_omzet = 0
@@ -153,12 +153,17 @@ for trx in st.session_state.transaksi:
     total_keuntungan += trx["keuntungan"]
     total_produk += trx["qty"]
 
+# =====================================================
+# DASHBOARD
+# =====================================================
+
 col1, col2, col3 = st.columns(3)
 
 with col1:
 
     st.markdown(f"""
     <div class="metric-card">
+
         <div class="metric-title">
             Total Omzet
         </div>
@@ -166,6 +171,7 @@ with col1:
         <div class="metric-value">
             Rp {total_omzet:,}
         </div>
+
     </div>
     """, unsafe_allow_html=True)
 
@@ -173,6 +179,7 @@ with col2:
 
     st.markdown(f"""
     <div class="metric-card">
+
         <div class="metric-title">
             Total Keuntungan
         </div>
@@ -180,6 +187,7 @@ with col2:
         <div class="metric-value">
             Rp {total_keuntungan:,}
         </div>
+
     </div>
     """, unsafe_allow_html=True)
 
@@ -187,6 +195,7 @@ with col3:
 
     st.markdown(f"""
     <div class="metric-card">
+
         <div class="metric-title">
             Total Produk Keluar
         </div>
@@ -194,13 +203,14 @@ with col3:
         <div class="metric-value">
             {total_produk} pcs
         </div>
+
     </div>
     """, unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
 # =====================================================
-# INPUT DISTRIBUSI
+# FORM INPUT
 # =====================================================
 
 st.markdown("""
@@ -228,7 +238,7 @@ total_keuntungan_input = 0
 total_qty_input = 0
 
 # =====================================================
-# PRODUK LOOP
+# LOOP PRODUK
 # =====================================================
 
 for produk_nama, data in produk_list.items():
@@ -240,7 +250,7 @@ for produk_nama, data in produk_list.items():
     with col1:
 
         pilih = st.checkbox(
-            f"{produk_nama}",
+            produk_nama,
             key=f"check_{produk_nama}"
         )
 
@@ -280,6 +290,7 @@ for produk_nama, data in produk_list.items():
             "subtotal_modal": subtotal_modal,
             "subtotal_jual": subtotal_jual,
             "keuntungan": keuntungan
+
         })
 
 # =====================================================
@@ -335,6 +346,7 @@ if st.button("💾 Simpan Distribusi"):
             "keuntungan": total_keuntungan_input,
 
             "status": status
+
         })
 
         st.success("Distribusi berhasil disimpan")
@@ -344,7 +356,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =====================================================
-# RIWAYAT DISTRIBUSI
+# RIWAYAT
 # =====================================================
 
 st.markdown("""
@@ -381,6 +393,7 @@ else:
             "Omzet": trx["total_jual"],
             "Keuntungan": trx["keuntungan"],
             "Status": trx["status"]
+
         })
 
     df = pd.DataFrame(data_tampil)
@@ -397,10 +410,15 @@ else:
     csv = df.to_csv(index=False).encode("utf-8")
 
     st.download_button(
+
         label="⬇️ Download Laporan CSV",
+
         data=csv,
+
         file_name="laporan_distributor_bakpau.csv",
+
         mime="text/csv"
+
     )
 
 st.markdown("""
@@ -408,26 +426,17 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =====================================================
-# RINGKASAN
+# FOOTER
 # =====================================================
 
 st.markdown("""
-<div class="card">
-""", unsafe_allow_html=True)
+<div style="
+text-align:center;
+color:#dddddd;
+padding:20px;
+">
 
-st.markdown("## 📈 Ringkasan Pendapatan")
+🥟 Distributor Bakpau UMKM
 
-st.markdown(f"""
-### 💵 Total Omzet
-# Rp {total_omzet:,}
-
-### 🟢 Total Keuntungan
-# Rp {total_keuntungan:,}
-
-### 📦 Total Produk Keluar
-# {total_produk} pcs
-""")
-
-st.markdown("""
 </div>
 """, unsafe_allow_html=True)
