@@ -2,7 +2,7 @@ import streamlit as st
 from datetime import datetime
 
 # =====================================================
-# CONFIG
+# PAGE CONFIG
 # =====================================================
 
 st.set_page_config(
@@ -49,14 +49,6 @@ h1,h2,h3,h4,h5,h6,p,label{
     padding:18px;
     border-radius:18px;
     margin-bottom:15px;
-}
-
-.receipt{
-    background:white;
-    color:black;
-    padding:25px;
-    border-radius:20px;
-    margin-top:20px;
 }
 
 .stButton button{
@@ -118,7 +110,7 @@ menu = [
 ]
 
 # =====================================================
-# SESSION
+# SESSION STATE
 # =====================================================
 
 if "cart" not in st.session_state:
@@ -142,9 +134,15 @@ with col1:
 
         with st.container():
 
-            st.markdown('<div class="menu-box">', unsafe_allow_html=True)
+            st.markdown(
+                '<div class="menu-box">',
+                unsafe_allow_html=True
+            )
 
-            st.image(item["gambar"], use_container_width=True)
+            st.image(
+                item["gambar"],
+                use_container_width=True
+            )
 
             st.markdown(
                 f"### {item['nama']}"
@@ -175,7 +173,10 @@ with col1:
 
                 st.success("Berhasil ditambahkan")
 
-            st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown(
+                '</div>',
+                unsafe_allow_html=True
+            )
 
 # =====================================================
 # KERANJANG
@@ -197,7 +198,10 @@ with col2:
 
             total += item["subtotal"]
 
-            st.markdown('<div class="cart-box">', unsafe_allow_html=True)
+            st.markdown(
+                '<div class="cart-box">',
+                unsafe_allow_html=True
+            )
 
             c1, c2 = st.columns([3,1])
 
@@ -214,7 +218,10 @@ with col2:
                     f"### Rp {item['subtotal']:,}"
                 )
 
-            st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown(
+                '</div>',
+                unsafe_allow_html=True
+            )
 
     st.markdown(f"# Total : Rp {total:,}")
 
@@ -237,40 +244,164 @@ with col2:
 
     if st.button("🧾 Cetak Struk"):
 
-        st.markdown('<div class="receipt">', unsafe_allow_html=True)
-
-        st.markdown("""
-        # 🥟 TOKO BAKPAU
-        Fresh & Warm Everyday
-        """)
-
-        st.divider()
-
         now = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 
-        st.write("Tanggal :", now)
+        receipt_html = f"""
+        <div style="
+            background:white;
+            padding:35px;
+            border-radius:25px;
+            color:black;
+            box-shadow:0 10px 30px rgba(0,0,0,0.3);
+            margin-top:25px;
+        ">
 
-        st.divider()
+            <div style="
+                text-align:center;
+                margin-bottom:25px;
+            ">
+
+                <div style="
+                    font-size:70px;
+                ">
+                    🥟
+                </div>
+
+                <div style="
+                    font-size:34px;
+                    font-weight:bold;
+                    color:#D62828;
+                ">
+                    TOKO BAKPAU
+                </div>
+
+                <div style="
+                    color:gray;
+                    margin-top:5px;
+                ">
+                    Fresh & Warm Every Day
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                margin-top:15px;
+                margin-bottom:25px;
+                color:#444;
+            ">
+                <span>Tanggal</span>
+                <span>{now}</span>
+            </div>
+        """
+
+        # =====================================================
+        # ITEM STRUK
+        # =====================================================
 
         for item in st.session_state.cart:
 
-            c1, c2 = st.columns([3,1])
+            receipt_html += f"""
+            <div style="
+                margin-bottom:15px;
+            ">
 
-            with c1:
-                st.write(item["nama"])
-                st.write(f"{item['qty']} x Rp {item['harga']:,}")
+                <div style="
+                    font-weight:bold;
+                    font-size:17px;
+                    color:#222;
+                ">
+                    {item['nama']}
+                </div>
 
-            with c2:
-                st.write(f"Rp {item['subtotal']:,}")
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    color:#666;
+                    margin-top:5px;
+                ">
+                    <span>
+                        {item['qty']} x Rp {item['harga']:,}
+                    </span>
 
-        st.divider()
+                    <span>
+                        Rp {item['subtotal']:,}
+                    </span>
+                </div>
 
-        st.markdown(f"## TOTAL : Rp {total:,}")
+            </div>
+            """
 
-        st.write("Pembayaran :", payment)
-        st.write(f"Tunai : Rp {bayar:,}")
-        st.write(f"Kembalian : Rp {kembali:,}")
+        # =====================================================
+        # TOTAL
+        # =====================================================
 
-        st.success("Terima Kasih 🙏")
+        receipt_html += f"""
 
-        st.markdown('</div>', unsafe_allow_html=True)
+            <hr>
+
+            <div style="
+                margin-top:20px;
+                font-size:18px;
+            ">
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    margin-bottom:10px;
+                ">
+                    <b>TOTAL</b>
+                    <b>Rp {total:,}</b>
+                </div>
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    margin-bottom:10px;
+                ">
+                    <span>PEMBAYARAN</span>
+                    <span>{payment}</span>
+                </div>
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    margin-bottom:10px;
+                ">
+                    <span>TUNAI</span>
+                    <span>Rp {bayar:,}</span>
+                </div>
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    margin-bottom:10px;
+                    color:green;
+                    font-weight:bold;
+                ">
+                    <span>KEMBALIAN</span>
+                    <span>Rp {kembali:,}</span>
+                </div>
+
+            </div>
+
+            <div style="
+                text-align:center;
+                margin-top:30px;
+                color:#666;
+            ">
+                Terima Kasih 🙏
+                <br>
+                Selamat menikmati bakpau 🥟
+            </div>
+
+        </div>
+        """
+
+        st.markdown(
+            receipt_html,
+            unsafe_allow_html=True
+        )
