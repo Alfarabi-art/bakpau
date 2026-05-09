@@ -12,83 +12,73 @@ st.set_page_config(
 )
 
 # =====================================================
-# BACKGROUND
+# CSS
 # =====================================================
 
-page_bg = """
+st.markdown("""
 <style>
 
-[data-testid="stAppViewContainer"]{
+.stApp{
 background-image:url("https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=1200");
 background-size:cover;
 background-position:center;
-background-repeat:no-repeat;
 background-attachment:fixed;
-}
-
-[data-testid="stHeader"]{
-background:rgba(0,0,0,0);
 }
 
 .block-container{
 padding-top:20px;
 }
 
-.kotak{
-background:rgba(0,0,0,0.55);
-padding:25px;
-border-radius:25px;
-backdrop-filter: blur(10px);
-margin-bottom:20px;
+[data-testid="stHeader"]{
+background:rgba(0,0,0,0);
 }
 
-.title{
-color:white;
+.kotak{
+background:rgba(0,0,0,0.60);
+padding:25px;
+border-radius:20px;
+margin-bottom:20px;
+backdrop-filter:blur(10px);
+}
+
+.judul{
 font-size:60px;
 font-weight:bold;
-}
-
-.subtitle{
-color:#dddddd;
-font-size:24px;
-margin-top:-10px;
-}
-
-.metric-title{
-color:#dddddd;
-font-size:20px;
-margin-bottom:10px;
-}
-
-.metric-value{
 color:white;
-font-size:40px;
-font-weight:bold;
 }
 
-.card-produk{
+.subjudul{
+font-size:24px;
+color:#dddddd;
+}
+
+.metric-box{
 background:rgba(255,255,255,0.08);
 padding:20px;
 border-radius:20px;
-margin-bottom:15px;
+text-align:center;
 }
 
-.nama-produk{
+.metric-title{
+font-size:20px;
+color:#dddddd;
+}
+
+.metric-value{
+font-size:38px;
+font-weight:bold;
 color:white;
-font-size:24px;
-font-weight:bold;
 }
 
-.harga{
-color:#ffd166;
-font-size:22px;
+.label{
+font-size:18px;
 font-weight:bold;
+color:white;
+margin-bottom:5px;
 }
 
 </style>
-"""
-
-st.markdown(page_bg, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # =====================================================
 # DATA PRODUK
@@ -127,11 +117,11 @@ if "riwayat" not in st.session_state:
 st.markdown("""
 <div class="kotak">
 
-<div class="title">
+<div class="judul">
 🥟 Distributor Bakpau
 </div>
 
-<div class="subtitle">
+<div class="subjudul">
 Sistem Distribusi & Pendapatan UMKM
 </div>
 
@@ -148,38 +138,49 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-nama = st.text_input("Nama Pengambil / Reseller")
+st.markdown('<div class="label">Nama Pengambil / Reseller</div>', unsafe_allow_html=True)
+nama = st.text_input("", label_visibility="collapsed")
 
+st.markdown('<div class="label">Status Pembayaran</div>', unsafe_allow_html=True)
 status = st.selectbox(
-    "Status Pembayaran",
-    ["Belum Bayar", "Sudah Bayar"]
+    "",
+    ["Belum Bayar", "Sudah Bayar"],
+    label_visibility="collapsed"
 )
 
 # =====================================================
-# MULTI PRODUK
+# PILIH PRODUK
 # =====================================================
 
-st.markdown("## 🛒 Pilih Produk")
+st.markdown("""
+<div class="kotak">
+<h2 style='color:white;'>🛒 Pilih Produk</h2>
+</div>
+""", unsafe_allow_html=True)
 
 produk_terpilih = []
 
 for nama_produk, data in produk_data.items():
 
-    st.markdown(f"""
-    <div class="card-produk">
-    <div class="nama-produk">{nama_produk}</div>
-    <div class="harga">
-    Rp {data['jual']:,}
-    </div>
-    </div>
-    """, unsafe_allow_html=True)
+    col1, col2 = st.columns([3,1])
 
-    qty = st.number_input(
-        f"Qty {nama_produk}",
-        min_value=0,
-        step=1,
-        key=nama_produk
-    )
+    with col1:
+        st.markdown(f"""
+        <div class="kotak">
+        <h3 style='color:white;'>{nama_produk}</h3>
+        <h2 style='color:#ffd166;'>
+        Rp {data['jual']:,}
+        </h2>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col2:
+        qty = st.number_input(
+            f"Qty {nama_produk}",
+            min_value=0,
+            step=1,
+            key=nama_produk
+        )
 
     if qty > 0:
 
@@ -215,13 +216,9 @@ grand_keuntungan = sum(x["Keuntungan"] for x in produk_terpilih)
 col1, col2, col3 = st.columns(3)
 
 with col1:
-
     st.markdown(f"""
-    <div class="kotak">
-    <div class="metric-title">
-    Total Omzet
-    </div>
-
+    <div class="metric-box">
+    <div class="metric-title">Total Omzet</div>
     <div class="metric-value">
     Rp {grand_jual:,}
     </div>
@@ -229,13 +226,9 @@ with col1:
     """, unsafe_allow_html=True)
 
 with col2:
-
     st.markdown(f"""
-    <div class="kotak">
-    <div class="metric-title">
-    Total Keuntungan
-    </div>
-
+    <div class="metric-box">
+    <div class="metric-title">Keuntungan</div>
     <div class="metric-value" style="color:#00ff99;">
     Rp {grand_keuntungan:,}
     </div>
@@ -243,13 +236,9 @@ with col2:
     """, unsafe_allow_html=True)
 
 with col3:
-
     st.markdown(f"""
-    <div class="kotak">
-    <div class="metric-title">
-    Total Produk Keluar
-    </div>
-
+    <div class="metric-box">
+    <div class="metric-title">Produk Keluar</div>
     <div class="metric-value" style="color:#ffd166;">
     {grand_qty} pcs
     </div>
@@ -257,8 +246,10 @@ with col3:
     """, unsafe_allow_html=True)
 
 # =====================================================
-# SIMPAN DATA
+# SIMPAN
 # =====================================================
+
+st.write("")
 
 if st.button("💾 Simpan Distribusi"):
 
