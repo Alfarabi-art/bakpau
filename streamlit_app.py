@@ -13,7 +13,7 @@ st.set_page_config(
 )
 
 # =====================================================
-# CSS
+# CSS FIX
 # =====================================================
 
 st.markdown("""
@@ -29,46 +29,28 @@ st.markdown("""
     background-attachment:fixed;
 }
 
-.block-container{
-    padding-top:2rem;
-}
-
 [data-testid="stHeader"]{
     background:transparent;
+}
+
+.block-container{
+    padding-top:2rem;
 }
 
 h1,h2,h3,h4,h5,h6,p,label{
     color:white !important;
 }
 
-.card{
-    background:rgba(255,255,255,0.08);
-    padding:25px;
-    border-radius:20px;
-    margin-bottom:25px;
-    backdrop-filter:blur(10px);
-    border:1px solid rgba(255,255,255,0.1);
+.stTextInput input{
+    border-radius:12px;
 }
 
-.metric-card{
-    background:rgba(255,255,255,0.12);
-    padding:25px;
-    border-radius:20px;
-    text-align:center;
-    backdrop-filter:blur(10px);
-    border:1px solid rgba(255,255,255,0.1);
+.stSelectbox div{
+    border-radius:12px;
 }
 
-.metric-title{
-    color:#dddddd;
-    font-size:18px;
-    margin-bottom:10px;
-}
-
-.metric-value{
-    color:white;
-    font-size:38px;
-    font-weight:bold;
+.stNumberInput input{
+    border-radius:12px;
 }
 
 .stButton button{
@@ -77,9 +59,9 @@ h1,h2,h3,h4,h5,h6,p,label{
     color:white;
     border:none;
     border-radius:12px;
-    font-weight:bold;
     padding:14px;
     font-size:16px;
+    font-weight:bold;
 }
 
 .stButton button:hover{
@@ -90,7 +72,7 @@ h1,h2,h3,h4,h5,h6,p,label{
 """, unsafe_allow_html=True)
 
 # =====================================================
-# SESSION
+# SESSION STATE
 # =====================================================
 
 if "transaksi" not in st.session_state:
@@ -132,7 +114,7 @@ st.markdown("""
     display:flex;
     align-items:center;
     gap:15px;
-    margin-bottom:20px;
+    margin-bottom:30px;
 ">
 
     <div style="font-size:70px;">
@@ -176,53 +158,110 @@ for trx in st.session_state.transaksi:
     total_produk += trx["Qty"]
 
 # =====================================================
-# DASHBOARD
+# DASHBOARD FIX
 # =====================================================
 
 col1, col2, col3 = st.columns(3)
 
+# =====================================================
+# CARD 1
+# =====================================================
+
 with col1:
 
     st.markdown(f"""
-    <div class="metric-card">
+    <div style="
+        background:rgba(255,255,255,0.12);
+        padding:30px;
+        border-radius:20px;
+        text-align:center;
+        backdrop-filter:blur(10px);
+        border:1px solid rgba(255,255,255,0.1);
+    ">
 
-        <div class="metric-title">
+        <div style="
+            color:#dddddd;
+            font-size:20px;
+            margin-bottom:10px;
+        ">
             Total Omzet
         </div>
 
-        <div class="metric-value">
+        <div style="
+            color:white;
+            font-size:40px;
+            font-weight:bold;
+        ">
             Rp {total_omzet:,}
         </div>
 
     </div>
     """, unsafe_allow_html=True)
 
+# =====================================================
+# CARD 2
+# =====================================================
+
 with col2:
 
     st.markdown(f"""
-    <div class="metric-card">
+    <div style="
+        background:rgba(255,255,255,0.12);
+        padding:30px;
+        border-radius:20px;
+        text-align:center;
+        backdrop-filter:blur(10px);
+        border:1px solid rgba(255,255,255,0.1);
+    ">
 
-        <div class="metric-title">
+        <div style="
+            color:#dddddd;
+            font-size:20px;
+            margin-bottom:10px;
+        ">
             Total Keuntungan
         </div>
 
-        <div class="metric-value" style="color:#00ff99;">
+        <div style="
+            color:#00ff99;
+            font-size:40px;
+            font-weight:bold;
+        ">
             Rp {total_keuntungan:,}
         </div>
 
     </div>
     """, unsafe_allow_html=True)
 
+# =====================================================
+# CARD 3
+# =====================================================
+
 with col3:
 
     st.markdown(f"""
-    <div class="metric-card">
+    <div style="
+        background:rgba(255,255,255,0.12);
+        padding:30px;
+        border-radius:20px;
+        text-align:center;
+        backdrop-filter:blur(10px);
+        border:1px solid rgba(255,255,255,0.1);
+    ">
 
-        <div class="metric-title">
+        <div style="
+            color:#dddddd;
+            font-size:20px;
+            margin-bottom:10px;
+        ">
             Total Produk Keluar
         </div>
 
-        <div class="metric-value" style="color:#ffd166;">
+        <div style="
+            color:#ffd166;
+            font-size:40px;
+            font-weight:bold;
+        ">
             {total_produk} pcs
         </div>
 
@@ -230,14 +269,33 @@ with col3:
     """, unsafe_allow_html=True)
 
 # =====================================================
-# FORM
+# SPACER
 # =====================================================
 
 st.write("")
+st.write("")
 
-st.markdown('<div class="card">', unsafe_allow_html=True)
+# =====================================================
+# FORM INPUT
+# =====================================================
 
-st.markdown("## 📦 Input Pengambilan Produk")
+st.markdown("""
+<div style="
+    background:rgba(255,255,255,0.08);
+    padding:30px;
+    border-radius:20px;
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.1);
+">
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<h1 style="
+    color:white;
+">
+📦 Input Pengambilan Produk
+</h1>
+""", unsafe_allow_html=True)
 
 nama = st.text_input(
     "Nama Pengambil / Reseller"
@@ -257,22 +315,25 @@ jumlah_menu = st.number_input(
 
 produk_dipilih = []
 
-grand_modal = 0
-grand_jual = 0
+grand_total_jual = 0
 grand_keuntungan = 0
 grand_qty = 0
 
 # =====================================================
-# MULTI MENU
+# MULTI PRODUK
 # =====================================================
 
 for i in range(jumlah_menu):
 
-    st.markdown(f"### Produk {i+1}")
+    st.markdown(f"""
+    <h3 style="color:white;">
+    Produk {i+1}
+    </h3>
+    """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2)
+    colA, colB = st.columns(2)
 
-    with col1:
+    with colA:
 
         produk = st.selectbox(
             f"Pilih Produk {i+1}",
@@ -280,7 +341,7 @@ for i in range(jumlah_menu):
             key=f"produk_{i}"
         )
 
-    with col2:
+    with colB:
 
         qty = st.number_input(
             f"Qty Produk {i+1}",
@@ -296,8 +357,7 @@ for i in range(jumlah_menu):
     total_jual = jual * qty
     keuntungan = total_jual - total_modal
 
-    grand_modal += total_modal
-    grand_jual += total_jual
+    grand_total_jual += total_jual
     grand_keuntungan += keuntungan
     grand_qty += qty
 
@@ -318,27 +378,27 @@ for i in range(jumlah_menu):
 
 st.markdown(f"""
 <div style="
-    background:rgba(255,255,255,0.06);
-    padding:20px;
-    border-radius:15px;
+    background:rgba(255,255,255,0.08);
+    padding:25px;
+    border-radius:20px;
     margin-top:20px;
 ">
 
-<h3 style="color:white;">
-💰 Total Keseluruhan
-</h3>
+    <h2 style="color:white;">
+        💰 Ringkasan
+    </h2>
 
-<h2 style="color:#00ff99;">
-Omzet : Rp {grand_jual:,}
-</h2>
+    <h1 style="color:#00ff99;">
+        Omzet : Rp {grand_total_jual:,}
+    </h1>
 
-<h2 style="color:#ffd166;">
-Keuntungan : Rp {grand_keuntungan:,}
-</h2>
+    <h1 style="color:#ffd166;">
+        Keuntungan : Rp {grand_keuntungan:,}
+    </h1>
 
-<h2 style="color:white;">
-Total Produk : {grand_qty} pcs
-</h2>
+    <h1 style="color:white;">
+        Total Produk : {grand_qty} pcs
+    </h1>
 
 </div>
 """, unsafe_allow_html=True)
@@ -390,12 +450,31 @@ if st.button("💾 Simpan Distribusi"):
 st.markdown("</div>", unsafe_allow_html=True)
 
 # =====================================================
+# SPACER
+# =====================================================
+
+st.write("")
+st.write("")
+
+# =====================================================
 # TABEL
 # =====================================================
 
-st.markdown('<div class="card">', unsafe_allow_html=True)
+st.markdown("""
+<div style="
+    background:rgba(255,255,255,0.08);
+    padding:30px;
+    border-radius:20px;
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.1);
+">
+""", unsafe_allow_html=True)
 
-st.markdown("## 📋 Riwayat Distribusi")
+st.markdown("""
+<h1 style="color:white;">
+📋 Riwayat Distribusi
+</h1>
+""", unsafe_allow_html=True)
 
 if len(st.session_state.transaksi) == 0:
 
