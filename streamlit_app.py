@@ -94,6 +94,24 @@ label,p{
     background:#ff2e2e;
 }
 
+/* DOWNLOAD BUTTON */
+
+[data-testid="stDownloadButton"] button{
+    width:100%;
+    background:#00c853 !important;
+    color:white !important;
+    border:none !important;
+    border-radius:15px !important;
+    padding:14px !important;
+    font-size:17px !important;
+    font-weight:bold !important;
+}
+
+[data-testid="stDownloadButton"] button:hover{
+    background:#00b248 !important;
+    color:white !important;
+}
+
 /* MOBILE */
 
 @media(max-width:768px){
@@ -307,7 +325,7 @@ with col2:
     )
 
 # =====================================================
-# SIMPAN
+# BUTTON SIMPAN
 # =====================================================
 
 if st.button("💾 Simpan Distribusi"):
@@ -432,13 +450,16 @@ else:
         height=400
     )
 
+    # CSV DOWNLOAD
+
     csv = df.to_csv(
         index=False
     ).encode("utf-8")
 
     st.download_button(
-        "⬇️ Download CSV",
-        csv,
-        "laporan_distributor.csv",
-        "text/csv"
+        label="⬇️ Download CSV",
+        data=csv,
+        file_name="laporan_distributor.csv",
+        mime="text/csv",
+        use_container_width=True
     )
